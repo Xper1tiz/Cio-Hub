@@ -943,332 +943,244 @@ MainPage.Visible = true
 MainBtn.BackgroundTransparency = 0.5
 MainBtn.TextColor3 = Settings.Text
 
-CreateToggle(MainPage, "Fullbright", function(State)
-    if State then
-        Lighting.Brightness = 2
-        Lighting.ClockTime = 14
-        Lighting.FogEnd = 100000
-        Lighting.GlobalShadows = false
-        Lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
-    else
-        Lighting.Brightness = 1
-        Lighting.ClockTime = 14
-        Lighting.FogEnd = 1000
-        Lighting.GlobalShadows = true
-        Lighting.OutdoorAmbient = Color3.fromRGB(127, 127, 127)
-    end
-end)
-
-CreateSlider(MainPage, "FOV", 70, 120, 70, function(Value)
-    Workspace.CurrentCamera.FieldOfView = Value
-end)
-
-CreateSlider(MainPage, "Speed", 15, 50, 15, function(Value)
-    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
-        LocalPlayer.Character.Humanoid.WalkSpeed = Value
-    end
-end)
-
-local MonsterNotifyConnection
-
-CreateToggle(MainPage, "Monster Notify", function(State)
-    if State then
-        if MonsterNotifyConnection then MonsterNotifyConnection:Disconnect() end
-        MonsterNotifyConnection = Workspace.ChildAdded:Connect(function(child)
-            if child.Name == "RushMoving" or child.Name == "AmbushMoving" or child.Name == "Eyes" or child.Name == "Halt" or child.Name == "SeekMoving" or child.Name == "A60" or child.Name == "A120" then
-                SendNotification("Monster Alert", child.Name .. " has spawned!", 5)
-            end
-        end)
-    elseif MonsterNotifyConnection then
-        MonsterNotifyConnection:Disconnect()
-        MonsterNotifyConnection = nil
-    end
-end)
-
 local ESPPage = CreateTab("ESP")
+local MiscPage = CreateTab("Misc")
+local ConfigPage = CreateTab("Config")
 
---// ESP TOGGLE STATES //--
-local ESPToggled = {
-    DoorESP = false,
-    ObjESP = false,
-    EntityESP = false,
-    GoldPileESP = false,
-    ItemESP = false,
-    HidingESP = false,
-    ShedESP = false,
-    PlayerESP = false,
-    RainbowESP = false,
-    EnableText = false,
-    TextSize = 14,
-    TextHeight = 0.2,
-    MaxDistance = 5000
+local Flags = {
+    Door = false, Keys = false, Items = false, Books = false, Entities = false,
+    Figure = false, Lockers = false, Chests = false, Gold = false, Players = false,
+    AutoLoot = false, Notify = false, LibraryCode = false
 }
+local EspSettings = {Text = false, TextSize = 14, Offset = 3, Distance = 5000, GoldMin = 0}
+local EntityNames = {RushMoving = true, AmbushMoving = true, ScreechMoving = true, HideMoving = true, TimothyMoving = true, DupeMoving = true, FloorMoving = true, FigureMoving = true}
+local activeEsp = {}
+local connections = {}
+local MonsterNotifyConnection
+local currentSpeed = 16
+local doorScanInterval = 3
 
---// ESP SETTINGS SECTION //--
-CreateSlider(ESPPage, "Text Size", 10, 40, 14, function(Value)
-    ESPToggled.TextSize = Value
-end)
-
-CreateSlider(ESPPage, "Text Offset Y", -5, 15, 0.2, function(Value)
-    ESPToggled.TextHeight = Value
-end, 0.1)
-
-CreateSlider(ESPPage, "Max Distance", 50, 5000, 5000, function(Value)
-    ESPToggled.MaxDistance = Value
-end)
-
-CreateToggle(ESPPage, "Rainbow ESP", function(State)
-    ESPToggled.RainbowESP = State
-    SendNotification("ESP", State and "Rainbow Enabled" or "Rainbow Disabled", 2)
-end)
-
-CreateToggle(ESPPage, "Enable Text", function(State)
-    ESPToggled.EnableText = State
-    SendNotification("ESP", State and "Text Enabled" or "Text Disabled", 2)
-end)
-
---// ESP TOGGLES SECTION //--
-CreateToggle(ESPPage, "Door ESP", function(State)
-    ESPToggled.DoorESP = State
-    SendNotification("ESP", State and "Door ESP Enabled" or "Door ESP Disabled", 2)
-end)
-
-CreateToggle(ESPPage, "Objective ESP", function(State)
-    ESPToggled.ObjESP = State
-    SendNotification("ESP", State and "Objective ESP Enabled" or "Objective ESP Disabled", 2)
-end)
-
-CreateToggle(ESPPage, "Entity Highlight", function(State)
-    ESPToggled.EntityESP = State
-    SendNotification("ESP", State and "Entity ESP Enabled" or "Entity ESP Disabled", 2)
-end)
-
-CreateToggle(ESPPage, "Gold Highlight", function(State)
-    ESPToggled.GoldPileESP = State
-    SendNotification("ESP", State and "Gold ESP Enabled" or "Gold ESP Disabled", 2)
-end)
-
-CreateToggle(ESPPage, "Item Highlight", function(State)
-    ESPToggled.ItemESP = State
-    SendNotification("ESP", State and "Item ESP Enabled" or "Item ESP Disabled", 2)
-end)
-
-CreateToggle(ESPPage, "Hiding ESP", function(State)
-    ESPToggled.HidingESP = State
-    SendNotification("ESP", State and "Hiding ESP Enabled" or "Hiding ESP Disabled", 2)
-end)
-
-CreateToggle(ESPPage, "ToolShed ESP", function(State)
-    ESPToggled.ShedESP = State
-    SendNotification("ESP", State and "Toolshed ESP Enabled" or "Toolshed ESP Disabled", 2)
-end)
-
-CreateToggle(ESPPage, "Player ESP", function(State)
-    ESPToggled.PlayerESP = State
-    SendNotification("ESP", State and "Player ESP Enabled" or "Player ESP Disabled", 2)
-end)
-
---// ESP SYSTEM //--
-local activeESPs = {}
-local EntityNames = {"Rush", "Ambush", "Seek", "Eyes", "Screech", "Halt", "A-60", "A-120", "GiggleCeiling", "MonumentEntity", "SallyMoving", "JeffTheKiller", "GloombatSwarm", "FigureRig"}
-local ObjList = {"LibraryHintPaper", "LiveHintBook", "KeyObtain", "LeverForGate", "LiveBreakerPolePickup", "ElectricalKeyObtain"}
-local ItemList = {"AK-47","AlarmClock","Aloe","AN-94","Anchors","A-90sStopSign","BackdoorKey","BackdoorLock","Bandage","BandagePack","Battery","BatteryPack","BigBomb","BlueKeycard","BluePrince","Bomb","Bread","BreakerPole","Bulklight","Buddy","Cactus","Candle","CarmelApple","Cheese","ChocolateBar","Citamines","ColtAnaconda","Cookie","Crossbow","Crucifix","DBShotgun","DesertEagle","ElectricalKey","ElectricalRoomFuse","EnergyDrink","ExecutionRoomKey","Flashlight","FreezeGun","Flamethrower","G36C","Generator","GeneratorFuse","GiftLauncher","GlitchFragment","GweenSoda","GuidanceCandy","Headlamp","HealingPad","HolyHandGrenade","HasteLever","Hookshot","HotelKey","HotelLock","IceTripmine","InvincibilityStar","JackoBomb","Keycard","Knockbomb","Landmine","Lantern","LaserPointer","Level5Keycard","LibearyBook","LibearyLock","LibearyPaper","Light_Bulb","Lockpick","Lolipop","MG42","M14","M16A2","M1911","M249","M5K","M4A1","MoonlightCandle","MoonlightFloat","MoonlightSmoothie","Monkey","Nanner","NannerPeel","NestGenerator","NVCS-3000","OrangeKeycard","P90","Paintingoval","Paintingrectanglelyingshortsides","Paintingrectanglelyinglongsides","PaintingSquare","PlantofVirdis","Potion","R870","RedEnergyDrink","Rock","Roto_Door","RubberChicken","SacredHerb","SaltShaker","Shakelight","Shears","SkeletonKey","Smoothie","SmallShieldPotion","SpeedBoostPad","SprayPaint","StarlightBottle","StarlightJug","StarlightVial","Straplight","StrawberryCandy","StrongHerb","StrongerHerb","StrongestHerb","SuperHerb","SweetHerb","ThrowableHatStand","ThrowableNormalCardboardBox","ThrowableOfficeChair","ThrowablePottedPlant","ThrowableRegalChair","ThrowableRegalOttoman","ThrowableStool","ThrowableTrashCan","ThrowableWideCardboardBox","ThrowableWoodenChair","ThrowableWoodenCrate","TipJar","Vitamins"}
-local HSList = {"Locker_Large", "Toolshed", "Wardrobe", "Bed", "Backdoor_Wardrobe", "Rooms_Locker", "CircularVent"}
-
-local function Cleanup(obj, data)
-    pcall(function()
-        if data.Highlight then data.Highlight:Destroy() end
-        if data.Box then data.Box:Destroy() end
-        if data.Bill then data.Bill:Destroy() end
-    end)
-    activeESPs[obj] = nil
+local function disconnectAll(list)
+    for _, connection in pairs(list) do connection:Disconnect() end
+    table.clear(list)
 end
 
-local function CreateESP(obj, name, type)
-    if activeESPs[obj] then return end
-    
-    local objN = obj.Name
-    
-    if objN == "LiveHintBook" or objN == "FigureRig" or objN == "LiveBreakerPolePickup" or objN == "ElectricalKeyObtain" then
-        local displayName = (objN == "LiveHintBook" and "Book") or 
-                            (objN == "FigureRig" and "Figure") or 
-                            (objN == "LiveBreakerPolePickup" and "Breaker") or 
-                            (objN == "ElectricalKeyObtain" and "Electrical Key")
-        activeESPs[obj] = { Name = displayName, Type = type }
-        return
+local function removeEsp(object)
+    local data = activeEsp[object]
+    if not data then return end
+    for _, instance in pairs(data.Instances) do
+        if instance and instance.Parent then instance:Destroy() end
     end
+    activeEsp[object] = nil
+end
 
-    local lowerN = objN:lower()
-    if lowerN:find("bookcase") or lowerN:find("modular_bookshelf") then
-        return
+local function addEsp(object, label, color, category)
+    if not object or not object.Parent or activeEsp[object] then return end
+    local adornee = object
+    if object:IsA("Model") and not object.PrimaryPart then
+        adornee = object:FindFirstChildWhichIsA("BasePart", true)
     end
+    if not adornee then return end
+    local highlight = Instance.new("Highlight")
+    highlight.Name = "_Ne0eDoorsESP"
+    highlight.Adornee = object
+    highlight.FillColor = color
+    highlight.OutlineColor = color
+    highlight.FillTransparency = 0.5
+    highlight.Parent = object
+    local billboard = Instance.new("BillboardGui")
+    billboard.Name = "_Ne0eDoorsLabel"
+    billboard.Adornee = adornee
+    billboard.Size = UDim2.fromOffset(150, 30)
+    billboard.StudsOffset = Vector3.new(0, EspSettings.Offset, 0)
+    billboard.AlwaysOnTop = true
+    billboard.Enabled = EspSettings.Text
+    billboard.Parent = adornee
+    local text = Instance.new("TextLabel")
+    text.Name = "Label"
+    text.Size = UDim2.fromScale(1, 1)
+    text.BackgroundTransparency = 1
+    text.TextColor3 = color
+    text.TextStrokeTransparency = 0
+    text.Font = Enum.Font.GothamBold
+    text.TextSize = EspSettings.TextSize
+    text.Text = label
+    text.Parent = billboard
+    activeEsp[object] = {Instances = {highlight, billboard}, Label = text, Billboard = billboard, Category = category}
+end
 
-    activeESPs[obj] = { Name = name, Type = type }
+local function objectPosition(object)
+    if object:IsA("Model") then return object:GetPivot().Position end
+    if object:IsA("BasePart") then return object.Position end
+end
+
+local function scanObjects()
+    local rooms = Workspace:FindFirstChild("CurrentRooms")
+    if not rooms then return end
+    for _, room in pairs(rooms:GetChildren()) do
+        for _, object in pairs(room:GetDescendants()) do
+            local name = object.Name
+            if Flags.Door and name == "RoomExit" then addEsp(object, "Door " .. room.Name, Color3.fromRGB(0, 255, 0), "Door")
+            elseif Flags.Keys and (name == "KeyObtain" or name == "LeverForGate") then addEsp(object, name == "KeyObtain" and "Key" or "Lever", Color3.fromRGB(90, 255, 40), "Keys")
+            elseif Flags.Books and (name == "LiveHintBook" or name == "LiveBreakerPolePickup") then addEsp(object, name == "LiveHintBook" and "Book" or "Breaker", Color3.fromRGB(160, 190, 255), "Books")
+            elseif Flags.Entities and EntityNames[name] then addEsp(object, name:gsub("Moving", ""), Color3.fromRGB(255, 25, 25), "Entities")
+            elseif Flags.Figure and name == "FigureRig" then addEsp(object, "Figure", Color3.fromRGB(255, 25, 25), "Figure")
+            elseif Flags.Lockers and (name == "Wardrobe" or name == "Rooms_Locker" or name == "Rooms_Locker_Fridge") then addEsp(object, "Locker", Color3.fromRGB(145, 100, 25), "Lockers")
+            elseif Flags.Chests and (name == "ChestBox" or name == "ChestBoxLocked") then addEsp(object, name == "ChestBox" and "Chest" or "Locked Chest", Color3.fromRGB(205, 120, 255), "Chests")
+            elseif Flags.Gold and name == "GoldPile" and (object:GetAttribute("GoldValue") or 0) >= EspSettings.GoldMin then addEsp(object, "GoldPile [" .. tostring(object:GetAttribute("GoldValue") or 0) .. "]", Color3.fromRGB(255, 255, 0), "Gold")
+            elseif Flags.Items and object:IsA("Model") and (object:GetAttribute("Pickup") or object:GetAttribute("PropType")) then addEsp(object, name, Color3.fromRGB(160, 190, 255), "Items")
+            end
+        end
+    end
+end
+
+local function categoryEnabled(category)
+    return Flags[category] == true
+end
+
+local function updateEsp()
+    local character = LocalPlayer.Character
+    local root = character and (character:FindFirstChild("HumanoidRootPart") or character:FindFirstChild("Collision"))
+    for object, data in pairs(activeEsp) do
+        local position = object.Parent and objectPosition(object)
+        local distance = root and position and (root.Position - position).Magnitude
+        if not position or not categoryEnabled(data.Category) or not distance or distance > EspSettings.Distance then
+            removeEsp(object)
+        else
+            data.Billboard.Enabled = EspSettings.Text
+            data.Billboard.StudsOffset = Vector3.new(0, EspSettings.Offset, 0)
+            data.Label.TextSize = EspSettings.TextSize
+            data.Label.Text = data.Label.Text:match("^[^%[]+") .. " [" .. math.floor(distance) .. "]"
+        end
+    end
 end
 
 task.spawn(function()
-    while true do
-        local rooms = Workspace:FindFirstChild("CurrentRooms")
-        if rooms then
-            for _, room in pairs(rooms:GetChildren()) do
-                for _, child in pairs(room:GetDescendants()) do
-                    local n = child.Name
-                    
-                    if ESPToggled.EntityESP and table.find(EntityNames, n) then
-                        CreateESP(child, n == "FigureRig" and "Figure" or n, "Entity")
-                    elseif ESPToggled.ObjESP and table.find(ObjList, n) then
-                        local d = (n == "KeyObtain" and "Key") or 
-                                  (n == "LeverForGate" and "Lever") or 
-                                  (n == "LiveHintBook" and "Book") or 
-                                  (n == "LiveBreakerPolePickup" and "Breaker") or 
-                                  (n == "ElectricalKeyObtain" and "Electrical Key") or n
-                        CreateESP(child, d, "Objective")
-                    elseif ESPToggled.DoorESP and n == "Door" and child:IsA("BasePart") then
-                        CreateESP(child, "Door", "Door")
-                    elseif ESPToggled.GoldPileESP and n == "GoldPile" then
-                        CreateESP(child, "Gold", "Gold")
-                    elseif ESPToggled.ItemESP and table.find(ItemList, n) then
-                        CreateESP(child, n, "Item")
-                    elseif ESPToggled.HidingESP and table.find(HSList, n) then
-                        CreateESP(child, n, "Hiding")
-                    elseif ESPToggled.ShedESP and n == "Toolshed_Small" then
-                        CreateESP(child, "Tool Shed", "Shed")
-                    end
-                end
-                task.wait(0.01)
-            end
-        end
-        
-        for _, ent in pairs(Workspace:GetChildren()) do
-            if table.find(EntityNames, ent.Name) then 
-                CreateESP(ent, ent.Name == "FigureRig" and "Figure" or ent.Name, "Entity") 
-            end
-        end
-        task.wait(1.5)
+    while CioGUI.Parent do
+        scanObjects()
+        task.wait(doorScanInterval)
     end
 end)
+RunService.RenderStepped:Connect(updateEsp)
 
-local function UpdateESP()
-    local rainbow = Color3.fromHSV(tick() % 5 / 5, 1, 1)
-    local char = LocalPlayer.Character
-    local root = char and (char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("Collision"))
-    if not root then return end
-
-    for obj, data in pairs(activeESPs) do
-        local isEnabled = (data.Type == "Door" and ESPToggled.DoorESP) or
-                          (data.Type == "Objective" and ESPToggled.ObjESP) or
-                          (data.Type == "Entity" and ESPToggled.EntityESP) or
-                          (data.Type == "Gold" and ESPToggled.GoldPileESP) or
-                          (data.Type == "Item" and ESPToggled.ItemESP) or
-                          (data.Type == "Hiding" and ESPToggled.HidingESP) or
-                          (data.Type == "Shed" and ESPToggled.ShedESP) or
-                          (data.Type == "Player" and ESPToggled.PlayerESP)
-
-        if not obj or not obj.Parent or not isEnabled then
-            Cleanup(obj, data)
-        else
-            local targetPos = (obj:IsA("Model") and obj:GetPivot().Position) or (obj:IsA("BasePart") and obj.Position)
-            if targetPos then
-                local dist = (root.Position - targetPos).Magnitude
-                if dist > ESPToggled.MaxDistance then
-                    if data.Highlight then data.Highlight.Enabled = false end
-                    if data.Box then data.Box.Visible = false end
-                    if data.Bill then data.Bill.Enabled = false end
-                else
-                    local _, onScreen = Workspace.CurrentCamera:WorldToViewportPoint(targetPos)
-                    if onScreen then
-            local color = Color3.fromRGB(255, 255, 255)
-            if data.Type == "Entity" then color = Color3.fromRGB(255, 0, 0)
-            elseif data.Type == "Gold" then color = Color3.fromRGB(255, 225, 0)
-            elseif data.Type == "Item" then color = Color3.fromRGB(0, 255, 255)
-            elseif data.Type == "Objective" then color = Color3.fromRGB(0, 0, 255)
-            elseif data.Type == "Door" then color = Color3.fromRGB(120, 0, 0)
-            elseif data.Type == "Hiding" then color = Color3.fromRGB(100, 100, 100)
-            elseif data.Type == "Shed" then color = Color3.fromRGB(139, 69, 19)
-            elseif data.Type == "Player" then color = Color3.fromRGB(0, 255, 0) end
-            if ESPToggled.RainbowESP then color = rainbow end
-
-            if data.Type == "Door" then
-                if not data.Box then
-                    data.Box = Instance.new("BoxHandleAdornment", obj); data.Box.AlwaysOnTop = true; data.Box.Adornee = obj; data.Box.ZIndex = 5
-                end
-                data.Box.Visible = true; data.Box.Size = obj.Size; data.Box.Color3 = color; data.Box.Transparency = 0.7
-            else
-                if not data.Highlight then data.Highlight = Instance.new("Highlight", obj) end
-                data.Highlight.Enabled = true; data.Highlight.FillColor = color; data.Highlight.OutlineColor = color; data.Highlight.FillTransparency = 0.5
-            end
-
-            if not data.Bill then
-                data.Bill = Instance.new("BillboardGui", obj); data.Bill.AlwaysOnTop = true; data.Bill.Size = UDim2.new(0, 150, 0, 40)
-                local txt = Instance.new("TextLabel", data.Bill); txt.BackgroundTransparency = 1; txt.Size = UDim2.new(1, 0, 1, 0); txt.Font = Enum.Font.SourceSansBold; txt.Name = "L"; txt.TextStrokeTransparency = 0
-            end
-            data.Bill.Enabled = ESPToggled.EnableText
-            data.Bill.StudsOffset = Vector3.new(0, ESPToggled.TextHeight, 0)
-            local lbl = data.Bill:FindFirstChild("L")
-            if lbl then
-                lbl.TextColor3 = color; lbl.TextSize = ESPToggled.TextSize
-                lbl.Text = data.Name .. " [" .. math.floor(dist) .. "]"
-            end
-                    else
-                        if data.Highlight then data.Highlight.Enabled = false end
-                        if data.Box then data.Box.Visible = false end
-                        if data.Bill then data.Bill.Enabled = false end
-                    end
-                end
-            end
+local function setEspFlag(name, state)
+    Flags[name] = state
+    if not state then
+        for object, data in pairs(activeEsp) do
+            if data.Category == name then removeEsp(object) end
         end
     end
 end
 
-RunService.RenderStepped:Connect(UpdateESP)
+CreateToggle(ESPPage, "ESP Doors", function(state) setEspFlag("Door", state) end)
+CreateToggle(ESPPage, "ESP Keys/Levers", function(state) setEspFlag("Keys", state) end)
+CreateToggle(ESPPage, "ESP Items", function(state) setEspFlag("Items", state) end)
+CreateToggle(ESPPage, "ESP Breakers/Books", function(state) setEspFlag("Books", state) end)
+CreateToggle(ESPPage, "ESP Entities", function(state) setEspFlag("Entities", state) end)
+CreateToggle(ESPPage, "ESP Figure", function(state) setEspFlag("Figure", state) end)
+CreateToggle(ESPPage, "ESP Closets/Lockers", function(state) setEspFlag("Lockers", state) end)
+CreateToggle(ESPPage, "ESP Chests", function(state) setEspFlag("Chests", state) end)
+CreateToggle(ESPPage, "ESP Goldpiles", function(state) setEspFlag("Gold", state) end)
 
---// ANTI ENTITIES TAB //--
-local AntiPage = CreateTab("Anti Entities")
+CreateToggle(ESPPage, "ESP Players", function(state)
+    setEspFlag("Players", state)
+    if not state then return end
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character then addEsp(player.Character, player.DisplayName, Color3.fromRGB(255, 255, 255), "Players") end
+    end
+end)
+connections.playerAdded = Players.PlayerAdded:Connect(function(player)
+    connections["character_" .. player.UserId] = player.CharacterAdded:Connect(function(character)
+        if Flags.Players then addEsp(character, player.DisplayName, Color3.fromRGB(255, 255, 255), "Players") end
+    end)
+end)
 
-local AntiEntityStates = {}
+CreateToggle(ESPPage, "Show ESP Text", function(state) EspSettings.Text = state end)
+CreateSlider(ESPPage, "Text Size", 10, 40, 14, function(value) EspSettings.TextSize = value end)
+CreateSlider(ESPPage, "Text Offset", -5, 15, 3, function(value) EspSettings.Offset = value end, 0.1)
+CreateSlider(ESPPage, "Max Distance", 50, 5000, 5000, function(value) EspSettings.Distance = value end)
 
-local function ToggleAntiEntity(name, state)
-    AntiEntityStates[name] = state
+CreateSlider(MainPage, "Movement Speed", 1, 21.5, 16, function(value) currentSpeed = value end, 0.5)
+task.spawn(function()
+    while CioGUI.Parent do
+        local humanoid = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+        if humanoid then humanoid.WalkSpeed = currentSpeed end
+        task.wait(0.1)
+    end
+end)
+
+CreateToggle(MiscPage, "Auto Loot", function(state) Flags.AutoLoot = state end)
+task.spawn(function()
+    while CioGUI.Parent do
+        if Flags.AutoLoot then
+            local character = LocalPlayer.Character
+            local root = character and character:FindFirstChild("HumanoidRootPart")
+            local rooms = Workspace:FindFirstChild("CurrentRooms")
+            if root and rooms then
+                for _, prompt in pairs(rooms:GetDescendants()) do
+                    if prompt:IsA("ProximityPrompt") and not prompt:GetAttribute("Interactions") then
+                        local parent = prompt.Parent
+                        local position = parent and parent:IsA("BasePart") and parent.Position
+                        if position and (root.Position - position).Magnitude <= 12 and fireproximityprompt then fireproximityprompt(prompt) end
+                    end
+                end
+            end
+        end
+        task.wait(0.1)
+    end
+end)
+
+CreateToggle(MiscPage, "Notify Entities", function(state)
+    Flags.Notify = state
+    if MonsterNotifyConnection then MonsterNotifyConnection:Disconnect() end
     if state then
-        SendNotification("Anti " .. name, "Enabled", 2)
-    else
-        SendNotification("Anti " .. name, "Disabled", 2)
+        MonsterNotifyConnection = Workspace.ChildAdded:Connect(function(object)
+            if EntityNames[object.Name] then SendNotification("Entity Warning", object.Name:gsub("Moving", "") .. " is coming, go hide!", 5) end
+        end)
     end
+end)
+
+local function decipherCode()
+    local paper = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("LibraryHintPaper")
+    local hints = LocalPlayer.PlayerGui:FindFirstChild("PermUI") and LocalPlayer.PlayerGui.PermUI:FindFirstChild("Hints")
+    local code = {"_", "_", "_", "_", "_"}
+    if not paper or not hints then return table.concat(code) end
+    local ui = paper:FindFirstChild("UI")
+    if not ui then return table.concat(code) end
+    for _, digit in pairs(ui:GetChildren()) do
+        local index = tonumber(digit.Name)
+        if index and digit:IsA("ImageLabel") then
+            for _, hint in pairs(hints:GetChildren()) do
+                local label = hint:FindFirstChild("TextLabel")
+                if hint:IsA("ImageLabel") and hint.Visible and label and digit.ImageRectOffset == hint.ImageRectOffset then code[index] = label.Text end
+            end
+        end
+    end
+    return table.concat(code)
 end
 
-CreateToggle(AntiPage, "Anti A-90", function(State) ToggleAntiEntity("A-90", State) end)
-CreateToggle(AntiPage, "Anti Dread", function(State) ToggleAntiEntity("Dread", State) end)
-CreateToggle(AntiPage, "Anti Screech", function(State) ToggleAntiEntity("Screech", State) end)
-CreateToggle(AntiPage, "Anti Giggle", function(State) ToggleAntiEntity("Giggle", State) end)
-CreateToggle(AntiPage, "Anti Haste", function(State) ToggleAntiEntity("Haste", State) end)
-CreateToggle(AntiPage, "Anti Halt", function(State) ToggleAntiEntity("Halt", State) end)
-CreateToggle(AntiPage, "Anti Rush", function(State) ToggleAntiEntity("Rush", State) end)
-CreateToggle(AntiPage, "Anti Eyes", function(State) ToggleAntiEntity("Eyes", State) end)
-
---// MISC TAB //--
-local MiscPage = CreateTab("Misc")
-
-CreateToggle(MiscPage, "Toggle Jump", function(State)
-    if LocalPlayer.Character then
-        LocalPlayer.Character:SetAttribute("CanJump", State)
+CreateToggle(MiscPage, "Auto Library Code", function(state)
+    Flags.LibraryCode = state
+    if not state then
+        if connections.library then connections.library:Disconnect() end
+        if connections.libraryChild then connections.libraryChild:Disconnect() end
+        return
     end
-    if State then
-        SendNotification("Toggle Jump", "Enabled", 2)
-    else
-        SendNotification("Toggle Jump", "Disabled", 2)
+    local function watchCharacter(character)
+        if connections.libraryChild then connections.libraryChild:Disconnect() end
+        connections.libraryChild = character.ChildAdded:Connect(function(object)
+            if object:IsA("Tool") and object.Name == "LibraryHintPaper" then
+                local code = decipherCode()
+                SendNotification("Library Code", code:find("_") and "Get all hints first!" or "The code is: " .. code, 8)
+            end
+        end)
     end
+    connections.library = LocalPlayer.CharacterAdded:Connect(watchCharacter)
+    if LocalPlayer.Character then watchCharacter(LocalPlayer.Character) end
 end)
 
-CreateToggle(MiscPage, "Toggle Slide", function(State)
-    if LocalPlayer.Character then
-        LocalPlayer.Character:SetAttribute("CanSlide", State)
-    end
-    if State then
-        SendNotification("Toggle Slide", "Enabled", 2)
-    else
-        SendNotification("Toggle Slide", "Disabled", 2)
-    end
-end)
+CreateSlider(ConfigPage, "Door Scan Interval", 1, 15, 3, function(value) doorScanInterval = value end)
+CreateSlider(ConfigPage, "Min Gold Value", 0, 500, 0, function(value) EspSettings.GoldMin = value end, 10)
 
 local DestroyPage, DestroyBtn = CreateTab("Destroy UI")
 DestroyBtn.TextColor3 = Color3.fromRGB(255, 60, 60)
