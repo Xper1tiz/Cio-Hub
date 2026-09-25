@@ -1,1 +1,656 @@
-do local Players=game:GetService("Players");local RunService=game:GetService("RunService");local CoreGui=game:GetService("CoreGui");local Workspace=game:GetService("Workspace");local TweenService=game:GetService("TweenService");local UserInputService=game:GetService("UserInputService");local LocalPlayer=Players.LocalPlayer;local Settings={HubName="Ne0e Hub",Accent=Color3.fromRGB(255,45,45),Background=Color3.fromRGB(10,10,10),Secondary=Color3.fromRGB(16,16,16),Outline=Color3.fromRGB(35,35,35),Text=Color3.fromRGB(255,255,255),SubText=Color3.fromRGB(140,140,140)};local Ne0eGUI=Instance.new("ScreenGui");Ne0eGUI.Name="Ne0eHub_Bang";Ne0eGUI.IgnoreGuiInset=true;Ne0eGUI.ResetOnSpawn=false;if pcall(function() Ne0eGUI.Parent=CoreGui;end) then Ne0eGUI.Parent=CoreGui;else Ne0eGUI.Parent=LocalPlayer:WaitForChild("PlayerGui");end local function MakeDraggable(TopBar,Object) local Dragging,DragInput,DragStart,StartPos;TopBar.InputBegan:Connect(function(input) if (input.UserInputType==Enum.UserInputType.MouseButton1) then Dragging=true;DragStart=input.Position;StartPos=Object.Position;input.Changed:Connect(function() if (input.UserInputState==Enum.UserInputState.End) then Dragging=false;end end);end end);TopBar.InputChanged:Connect(function(input) if (input.UserInputType==Enum.UserInputType.MouseMovement) then DragInput=input;end end);UserInputService.InputChanged:Connect(function(input) if ((input==DragInput) and Dragging) then local Delta=input.Position-DragStart ;TweenService:Create(Object,TweenInfo.new(0.08,Enum.EasingStyle.Linear),{Position=UDim2.new(StartPos.X.Scale,StartPos.X.Offset + Delta.X ,StartPos.Y.Scale,StartPos.Y.Offset + Delta.Y )}):Play();end end);end local MainFrame=Instance.new("Frame");MainFrame.Name="MainFrame";MainFrame.Visible=true;MainFrame.Size=UDim2.new(0,300,0,240);MainFrame.Position=UDim2.new(0,40,1, -260);MainFrame.BackgroundColor3=Settings.Background;MainFrame.BorderSizePixel=0;MainFrame.ClipsDescendants=true;MainFrame.Parent=Ne0eGUI;local MainCorner=Instance.new("UICorner");MainCorner.CornerRadius=UDim.new(0,8);MainCorner.Parent=MainFrame;local MainStroke=Instance.new("UIStroke");MainStroke.Color=Settings.Outline;MainStroke.Parent=MainFrame;local TopBar=Instance.new("Frame");TopBar.Size=UDim2.new(1,0,0,40);TopBar.BackgroundTransparency=1;TopBar.ZIndex=2;TopBar.Parent=MainFrame;local TopLine=Instance.new("Frame");TopLine.Size=UDim2.new(1,0,0,1);TopLine.Position=UDim2.new(0,0,1,0);TopLine.BackgroundColor3=Settings.Outline;TopLine.BorderSizePixel=0;TopLine.ZIndex=2;TopLine.Parent=TopBar;local HubTitle=Instance.new("TextLabel");HubTitle.Text="Fling Menu";HubTitle.Size=UDim2.new(1, -50,1,0);HubTitle.Position=UDim2.new(0,15,0,0);HubTitle.BackgroundTransparency=1;HubTitle.TextColor3=Settings.Text;HubTitle.Font=Enum.Font.GothamBold;HubTitle.TextSize=16;HubTitle.TextXAlignment=Enum.TextXAlignment.Left;HubTitle.ZIndex=2;HubTitle.Parent=TopBar;MakeDraggable(TopBar,MainFrame);local TextBox=Instance.new("TextBox");TextBox.Size=UDim2.new(0,180,0,35);TextBox.Position=UDim2.new(0,15,0,45);TextBox.BackgroundColor3=Settings.Secondary;TextBox.BackgroundTransparency=0.2;TextBox.TextColor3=Settings.Text;TextBox.PlaceholderText="Oyuncu Adı...";TextBox.Text="";TextBox.TextSize=14;TextBox.Font=Enum.Font.Gotham;TextBox.ClearTextOnFocus=false;TextBox.ZIndex=2;TextBox.Parent=MainFrame;local TextCorner=Instance.new("UICorner");TextCorner.CornerRadius=UDim.new(0,6);TextCorner.Parent=TextBox;local TextStroke=Instance.new("UIStroke");TextStroke.Color=Settings.Outline;TextStroke.Parent=TextBox;local CloseBtn=Instance.new("TextButton");CloseBtn.Text="X";CloseBtn.Size=UDim2.new(0,35,1,0);CloseBtn.Position=UDim2.new(1, -35,0,0);CloseBtn.BackgroundTransparency=1;CloseBtn.TextColor3=Settings.SubText;CloseBtn.TextSize=18;CloseBtn.Font=Enum.Font.Gotham;CloseBtn.ZIndex=2;CloseBtn.Parent=TopBar;CloseBtn.MouseEnter:Connect(function() TweenService:Create(CloseBtn,TweenInfo.new(0.2),{TextColor3=Settings.Accent}):Play();end);CloseBtn.MouseLeave:Connect(function() TweenService:Create(CloseBtn,TweenInfo.new(0.2),{TextColor3=Settings.SubText}):Play();end);local Content=Instance.new("ScrollingFrame");Content.Size=UDim2.new(0,280,1, -90);Content.Position=UDim2.new(0,0,0,90);Content.BackgroundTransparency=1;Content.ScrollBarThickness=2;Content.ScrollBarImageColor3=Settings.Outline;Content.ZIndex=2;Content.Parent=MainFrame;local ContentLayout=Instance.new("UIListLayout");ContentLayout.Padding=UDim.new(0,8);ContentLayout.HorizontalAlignment=Enum.HorizontalAlignment.Center;ContentLayout.Parent=Content;local ContentPadding=Instance.new("UIPadding");ContentPadding.PaddingTop=UDim.new(0,10);ContentPadding.PaddingBottom=UDim.new(0,10);ContentPadding.PaddingLeft=UDim.new(0,10);ContentPadding.PaddingRight=UDim.new(0,10);ContentPadding.Parent=Content;local SideFrame=Instance.new("Frame");SideFrame.Size=UDim2.new(0,150,0,190);SideFrame.Position=UDim2.new(0,290,0,45);SideFrame.BackgroundColor3=Settings.Secondary;SideFrame.BackgroundTransparency=0.2;SideFrame.Visible=true;SideFrame.ZIndex=3;SideFrame.Parent=MainFrame;local SideCorner=Instance.new("UICorner");SideCorner.CornerRadius=UDim.new(0,8);SideCorner.Parent=SideFrame;local SideStroke=Instance.new("UIStroke");SideStroke.Color=Settings.Outline;SideStroke.Parent=SideFrame;local SideScroll=Instance.new("ScrollingFrame");SideScroll.Size=UDim2.new(1, -10,1, -10);SideScroll.Position=UDim2.new(0,5,0,5);SideScroll.BackgroundTransparency=1;SideScroll.ScrollBarThickness=2;SideScroll.ScrollBarImageColor3=Settings.Outline;SideScroll.ZIndex=3;SideScroll.Parent=SideFrame;local SideLayout=Instance.new("UIListLayout");SideLayout.Padding=UDim.new(0,5);SideLayout.Parent=SideScroll;local SidePadding=Instance.new("UIPadding");SidePadding.PaddingTop=UDim.new(0,5);SidePadding.PaddingBottom=UDim.new(0,5);SidePadding.PaddingLeft=UDim.new(0,5);SidePadding.PaddingRight=UDim.new(0,5);SidePadding.Parent=SideScroll;local function CreateButton(Page,Text,Callback) local Btn=Instance.new("TextButton");Btn.Size=UDim2.new(1,0,0,32);Btn.BackgroundColor3=Settings.Secondary;Btn.BackgroundTransparency=0.2;Btn.Text=Text;Btn.TextColor3=Settings.Text;Btn.Font=Enum.Font.Gotham;Btn.TextSize=11;Btn.AutoButtonColor=false;Btn.ZIndex=2;Btn.Parent=Page;local BtnCorner=Instance.new("UICorner");BtnCorner.CornerRadius=UDim.new(0,6);BtnCorner.Parent=Btn;local BtnStroke=Instance.new("UIStroke");BtnStroke.Color=Settings.Outline;BtnStroke.Parent=Btn;Btn.MouseEnter:Connect(function() TweenService:Create(Btn,TweenInfo.new(0.2),{BackgroundColor3=Color3.fromRGB(25,25,25)}):Play();end);Btn.MouseLeave:Connect(function() TweenService:Create(Btn,TweenInfo.new(0.2),{BackgroundColor3=Settings.Secondary}):Play();end);Btn.MouseButton1Click:Connect(function() TweenService:Create(Btn,TweenInfo.new(0.1),{Size=UDim2.new(1,0,0,28)}):Play();wait(0.1);TweenService:Create(Btn,TweenInfo.new(0.1),{Size=UDim2.new(1,0,0,32)}):Play();pcall(Callback);end);end local function CreateToggle(Page,Text,Callback) local Toggled=false;local TogBtn=Instance.new("TextButton");TogBtn.Size=UDim2.new(1,0,0,32);TogBtn.BackgroundColor3=Settings.Secondary;TogBtn.BackgroundTransparency=0.2;TogBtn.Text="";TogBtn.AutoButtonColor=false;TogBtn.ZIndex=2;TogBtn.Parent=Page;local TogCorner=Instance.new("UICorner");TogCorner.CornerRadius=UDim.new(0,6);TogCorner.Parent=TogBtn;local TogStroke=Instance.new("UIStroke");TogStroke.Color=Settings.Outline;TogStroke.Parent=TogBtn;local TogLabel=Instance.new("TextLabel");TogLabel.Text=Text;TogLabel.Size=UDim2.new(1, -50,1,0);TogLabel.Position=UDim2.new(0,12,0,0);TogLabel.BackgroundTransparency=1;TogLabel.TextColor3=Settings.Text;TogLabel.Font=Enum.Font.Gotham;TogLabel.TextSize=11;TogLabel.TextXAlignment=Enum.TextXAlignment.Left;TogLabel.ZIndex=2;TogLabel.Parent=TogBtn;local SwitchBg=Instance.new("Frame");SwitchBg.Size=UDim2.new(0,32,0,16);SwitchBg.Position=UDim2.new(1, -38,0.5, -8);SwitchBg.BackgroundColor3=Settings.Background;SwitchBg.ZIndex=2;SwitchBg.Parent=TogBtn;local SwitchCorner=Instance.new("UICorner");SwitchCorner.CornerRadius=UDim.new(1,0);SwitchCorner.Parent=SwitchBg;local SwitchStroke=Instance.new("UIStroke");SwitchStroke.Color=Settings.Outline;SwitchStroke.Parent=SwitchBg;local Circle=Instance.new("Frame");Circle.Size=UDim2.new(0,12,0,12);Circle.Position=UDim2.new(0,2,0.5, -6);Circle.BackgroundColor3=Settings.SubText;Circle.ZIndex=2;Circle.Parent=SwitchBg;local CircleCorner=Instance.new("UICorner");CircleCorner.CornerRadius=UDim.new(1,0);CircleCorner.Parent=Circle;TogBtn.MouseButton1Click:Connect(function() Toggled= not Toggled;if Toggled then TweenService:Create(SwitchBg,TweenInfo.new(0.3,Enum.EasingStyle.Quint),{BackgroundColor3=Settings.Accent}):Play();TweenService:Create(Circle,TweenInfo.new(0.3,Enum.EasingStyle.Quint),{Position=UDim2.new(1, -14,0.5, -6),BackgroundColor3=Settings.Text}):Play();TweenService:Create(TogLabel,TweenInfo.new(0.3),{TextColor3=Settings.Accent}):Play();else TweenService:Create(SwitchBg,TweenInfo.new(0.3,Enum.EasingStyle.Quint),{BackgroundColor3=Settings.Background}):Play();TweenService:Create(Circle,TweenInfo.new(0.3,Enum.EasingStyle.Quint),{Position=UDim2.new(0,2,0.5, -6),BackgroundColor3=Settings.SubText}):Play();TweenService:Create(TogLabel,TweenInfo.new(0.3),{TextColor3=Settings.Text}):Play();end pcall(Callback,Toggled);end);end local function CreateSmallToggle(Parent,Text,Position,Size,Callback) local Toggled=false;local TogBtn=Instance.new("TextButton");TogBtn.Size=Size;TogBtn.Position=Position;TogBtn.BackgroundColor3=Settings.Secondary;TogBtn.BackgroundTransparency=0.2;TogBtn.Text=Text;TogBtn.TextColor3=Settings.Text;TogBtn.Font=Enum.Font.Gotham;TogBtn.TextSize=14;TogBtn.AutoButtonColor=false;TogBtn.ZIndex=2;TogBtn.Parent=Parent;local TogCorner=Instance.new("UICorner");TogCorner.CornerRadius=UDim.new(0,6);TogCorner.Parent=TogBtn;local TogStroke=Instance.new("UIStroke");TogStroke.Color=Settings.Outline;TogStroke.Parent=TogBtn;TogBtn.MouseEnter:Connect(function() TweenService:Create(TogBtn,TweenInfo.new(0.2),{BackgroundColor3=Color3.fromRGB(25,25,25)}):Play();end);TogBtn.MouseLeave:Connect(function() TweenService:Create(TogBtn,TweenInfo.new(0.2),{BackgroundColor3=Settings.Secondary}):Play();end);TogBtn.MouseButton1Click:Connect(function() Toggled= not Toggled;if Toggled then TweenService:Create(TogBtn,TweenInfo.new(0.2),{BackgroundColor3=Settings.Accent,TextColor3=Settings.Background}):Play();else TweenService:Create(TogBtn,TweenInfo.new(0.2),{BackgroundColor3=Settings.Secondary,TextColor3=Settings.Text}):Play();end pcall(Callback,Toggled);end);end local function refreshPlayerList() for _,child in pairs(SideScroll:GetChildren()) do if child:IsA("TextButton") then child:Destroy();end end local ySize=0;for _,player in pairs(Players:GetPlayers()) do if (player~=LocalPlayer) then local PBtn=Instance.new("TextButton");PBtn.Size=UDim2.new(1,0,0,25);PBtn.BackgroundColor3=Settings.Background;PBtn.BackgroundTransparency=0.5;PBtn.TextColor3=Settings.Text;PBtn.Text=player.Name;PBtn.Font=Enum.Font.Gotham;PBtn.TextSize=12;PBtn.ZIndex=3;PBtn.Parent=SideScroll;local PCorner=Instance.new("UICorner");PCorner.CornerRadius=UDim.new(0,4);PCorner.Parent=PBtn;PBtn.MouseButton1Click:Connect(function() TextBox.Text=player.Name;end);ySize=ySize + 30 ;end end SideScroll.CanvasSize=UDim2.new(0,0,0,ySize);end Players.PlayerAdded:Connect(refreshPlayerList);Players.PlayerRemoving:Connect(refreshPlayerList);refreshPlayerList();CreateSmallToggle(MainFrame,"👥",UDim2.new(0,200,0,45),UDim2.new(0,35,0,35),function(state) if state then TweenService:Create(MainFrame,TweenInfo.new(0.3,Enum.EasingStyle.Quint),{Size=UDim2.new(0,450,0,240)}):Play();refreshPlayerList();else TweenService:Create(MainFrame,TweenInfo.new(0.3,Enum.EasingStyle.Quint),{Size=UDim2.new(0,300,0,240)}):Play();end end);local statusLabel=Instance.new("TextLabel");statusLabel.Size=UDim2.new(1,0,0,28);statusLabel.BackgroundColor3=Settings.Secondary;statusLabel.BackgroundTransparency=0.2;statusLabel.Text="Status: Idle";statusLabel.TextColor3=Settings.Accent;statusLabel.Font=Enum.Font.Gotham;statusLabel.TextSize=10;statusLabel.ZIndex=2;statusLabel.Parent=Content;local statusLabelCorner=Instance.new("UICorner");statusLabelCorner.CornerRadius=UDim.new(0,6);statusLabelCorner.Parent=statusLabel;local isFlinging=false;local touchFlingActive=false;local touchFlingConnection;getgenv().OldPos=nil;getgenv().FPDH=workspace.FallenPartsDestroyHeight;local function GetPlayer(name) name=string.lower(name);for _,player in pairs(Players:GetPlayers()) do if ((string.lower(string.sub(player.Name,1, #name))==name) or (string.lower(string.sub(player.DisplayName,1, #name))==name)) then return player;end end return nil;end local function stopTouchFling() touchFlingActive=false;if touchFlingConnection then touchFlingConnection:Disconnect();touchFlingConnection=nil;end end local function startTouchFling() if touchFlingConnection then return;end touchFlingConnection=RunService.Heartbeat:Connect(function() if  not touchFlingActive then stopTouchFling();return;end local char=LocalPlayer.Character;local hrp=char and char:FindFirstChild("HumanoidRootPart") ;if  not hrp then return;end local vel=hrp.Velocity;hrp.Velocity=(vel * 1000000) + Vector3.new(0,1000000,0) ;RunService.RenderStepped:Wait();if (hrp and hrp.Parent) then hrp.Velocity=vel;end RunService.Stepped:Wait();if (hrp and hrp.Parent) then hrp.Velocity=vel + Vector3.new(0,0.1,0) ;end end);end local function flingPlayer(TargetPlayer) if (isFlinging or  not TargetPlayer or  not TargetPlayer.Character) then return;end isFlinging=true;statusLabel.Text="Status: Flinging "   .. TargetPlayer.Name ;local Player=LocalPlayer;local Character=Player.Character;local Humanoid=Character and Character:FindFirstChildOfClass("Humanoid") ;local RootPart=Humanoid and Humanoid.RootPart ;local TCharacter=TargetPlayer.Character;local THumanoid;local TRootPart;local THead;local Accessory;local Handle;if TCharacter:FindFirstChildOfClass("Humanoid") then THumanoid=TCharacter:FindFirstChildOfClass("Humanoid");end if (THumanoid and THumanoid.RootPart) then TRootPart=THumanoid.RootPart;end if TCharacter:FindFirstChild("Head") then THead=TCharacter.Head;end if TCharacter:FindFirstChildOfClass("Accessory") then Accessory=TCharacter:FindFirstChildOfClass("Accessory");end if (Accessory and Accessory:FindFirstChild("Handle")) then Handle=Accessory.Handle;end if (Character and Humanoid and RootPart) then if (RootPart.Velocity.Magnitude<50) then getgenv().OldPos=RootPart.CFrame;end if THead then Workspace.CurrentCamera.CameraSubject=THead;elseif ( not THead and Handle) then Workspace.CurrentCamera.CameraSubject=Handle;elseif (THumanoid and TRootPart) then Workspace.CurrentCamera.CameraSubject=THumanoid;end if  not TCharacter:FindFirstChildWhichIsA("BasePart") then isFlinging=false;statusLabel.Text="Status: Idle";return;end local FPos=function(BasePart,Pos,Ang) RootPart.CFrame=CFrame.new(BasePart.Position) * Pos * Ang ;Character:SetPrimaryPartCFrame(CFrame.new(BasePart.Position) * Pos * Ang );RootPart.Velocity=Vector3.new(90000000,90000000 * 10 ,90000000);RootPart.RotVelocity=Vector3.new(900000000,900000000,900000000);end;local SFBasePart=function(BasePart) local TimeToWait=2;local Time=tick();local Angle=0;repeat if (RootPart and THumanoid) then if (BasePart.Velocity.Magnitude<50) then Angle=Angle + 100 ;FPos(BasePart,CFrame.new(0,1.5,0) + ((THumanoid.MoveDirection * BasePart.Velocity.Magnitude)/1.25) ,CFrame.Angles(math.rad(Angle),0,0));task.wait();FPos(BasePart,CFrame.new(0, -1.5,0) + ((THumanoid.MoveDirection * BasePart.Velocity.Magnitude)/1.25) ,CFrame.Angles(math.rad(Angle),0,0));task.wait();FPos(BasePart,CFrame.new(2.25,1.5, -2.25) + ((THumanoid.MoveDirection * BasePart.Velocity.Magnitude)/1.25) ,CFrame.Angles(math.rad(Angle),0,0));task.wait();FPos(BasePart,CFrame.new( -2.25, -1.5,2.25) + ((THumanoid.MoveDirection * BasePart.Velocity.Magnitude)/1.25) ,CFrame.Angles(math.rad(Angle),0,0));task.wait();FPos(BasePart,CFrame.new(0,1.5,0) + THumanoid.MoveDirection ,CFrame.Angles(math.rad(Angle),0,0));task.wait();FPos(BasePart,CFrame.new(0, -1.5,0) + THumanoid.MoveDirection ,CFrame.Angles(math.rad(Angle),0,0));task.wait();else FPos(BasePart,CFrame.new(0,1.5,THumanoid.WalkSpeed),CFrame.Angles(math.rad(90),0,0));task.wait();FPos(BasePart,CFrame.new(0, -1.5, -THumanoid.WalkSpeed),CFrame.Angles(0,0,0));task.wait();FPos(BasePart,CFrame.new(0,1.5,THumanoid.WalkSpeed),CFrame.Angles(math.rad(90),0,0));task.wait();FPos(BasePart,CFrame.new(0,1.5,TRootPart.Velocity.Magnitude/1.25 ),CFrame.Angles(math.rad(90),0,0));task.wait();FPos(BasePart,CFrame.new(0, -1.5, -TRootPart.Velocity.Magnitude/1.25 ),CFrame.Angles(0,0,0));task.wait();FPos(BasePart,CFrame.new(0,1.5,TRootPart.Velocity.Magnitude/1.25 ),CFrame.Angles(math.rad(90),0,0));task.wait();FPos(BasePart,CFrame.new(0, -1.5,0),CFrame.Angles(math.rad(90),0,0));task.wait();FPos(BasePart,CFrame.new(0, -1.5,0),CFrame.Angles(0,0,0));task.wait();FPos(BasePart,CFrame.new(0, -1.5,0),CFrame.Angles(math.rad( -90),0,0));task.wait();FPos(BasePart,CFrame.new(0, -1.5,0),CFrame.Angles(0,0,0));task.wait();end else break;end until (BasePart.Velocity.Magnitude>500) or (BasePart.Parent~=TargetPlayer.Character) or (TargetPlayer.Parent~=Players) or ( not TargetPlayer.Character==TCharacter) or THumanoid.Sit or (Humanoid.Health<=0) or (tick()>(Time + TimeToWait))  end;workspace.FallenPartsDestroyHeight=NaN;local BV=Instance.new("BodyVelocity");BV.Name="EpixVel";BV.Parent=RootPart;BV.Velocity=Vector3.new(900000000,900000000,900000000);BV.MaxForce=Vector3.new(1/0 ,1/0 ,1/0 );Humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated,false);if (TRootPart and THead) then if ((TRootPart.CFrame.p-THead.CFrame.p).Magnitude>5) then SFBasePart(THead);else SFBasePart(TRootPart);end elseif (TRootPart and  not THead) then SFBasePart(TRootPart);elseif ( not TRootPart and THead) then SFBasePart(THead);elseif ( not TRootPart and  not THead and Accessory and Handle) then SFBasePart(Handle);end BV:Destroy();Humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated,true);Workspace.CurrentCamera.CameraSubject=Humanoid;repeat RootPart.CFrame=getgenv().OldPos * CFrame.new(0,0.5,0) ;Character:SetPrimaryPartCFrame(getgenv().OldPos * CFrame.new(0,0.5,0) );Humanoid:ChangeState("GettingUp");table.foreach(Character:GetChildren(),function(_,x) if x:IsA("BasePart") then x.Velocity,x.RotVelocity=Vector3.new(),Vector3.new();end end);task.wait();until (RootPart.Position-getgenv().OldPos.p).Magnitude<25  workspace.FallenPartsDestroyHeight=getgenv().FPDH;end isFlinging=false;statusLabel.Text="Status: Idle";end CreateToggle(Content,"Touch Fling",function(state) touchFlingActive=state;if state then startTouchFling();else stopTouchFling();end end);CreateButton(Content,"💥 Fling Player",function() if isFlinging then return;end local input=TextBox.Text;if (input=="") then statusLabel.Text="Status: Enter a name";return;end local target=GetPlayer(input);if target then flingPlayer(target);else statusLabel.Text="Status: Player not found";task.wait(1.5);statusLabel.Text="Status: Idle";end end);CloseBtn.MouseButton1Click:Connect(function() stopTouchFling();TweenService:Create(MainFrame,TweenInfo.new(0.3,Enum.EasingStyle.Quint,Enum.EasingDirection.In),{Size=UDim2.new(0,0,0,0)}):Play();wait(0.3);Ne0eGUI:Destroy();end); end
+return(function(HmUdN, ...)
+local GCieZE = {"bFbRxMnc";"5wD2C";"3cl2e4Mca18";"u23UUBejQi7";"QsvsvX7W1eN";"zOXONUUyJNR06R18";"AK2pnSxfcUP"}
+local F0Ypz75k = function(...)
+-- Servisler
+local Players = game:GetService(loadstring(base64decode("UGxheWVycw=="))())
+local RunService = game:GetService(loadstring(base64decode("UnVuU2VydmljZQ=="))())
+local CoreGui = game:GetService(loadstring(base64decode("Q29yZUd1aQ=="))())
+local Workspace = game:GetService(loadstring(base64decode("V29ya3NwYWNl"))())
+local TweenService = game:GetService(loadstring(base64decode("VHdlZW5TZXJ2aWNl"))())
+local UserInputService = game:GetService(loadstring(base64decode("VXNlcklucHV0U2VydmljZQ=="))())
+
+local LocalPlayer = Players.LocalPlayer
+
+--// SETTINGS & COLOR PALETTE //--
+local Settings = {
+    HubName = loadstring(base64decode("TmUwZSBIdWI="))(),
+    Accent = Color3.fromRGB(255, 45, 45), -- Crimson Red
+    Background = Color3.fromRGB(10, 10, 10),
+    Secondary = Color3.fromRGB(16, 16, 16),
+    Outline = Color3.fromRGB(35, 35, 35),
+    Text = Color3.fromRGB(255, 255, 255),
+    SubText = Color3.fromRGB(140, 140, 140)
+}
+
+--// GUI CREATION //--
+local Ne0eGUI = Instance.new(loadstring(base64decode("U2NyZWVuR3Vp"))())
+Ne0eGUI.Name = loadstring(base64decode("TmUwZUh1Yl9CYW5n"))()
+Ne0eGUI.IgnoreGuiInset = true
+Ne0eGUI.ResetOnSpawn = false
+if pcall(function() Ne0eGUI.Parent = CoreGui end) then
+    Ne0eGUI.Parent = CoreGui
+else
+    Ne0eGUI.Parent = LocalPlayer:WaitForChild(loadstring(base64decode("UGxheWVyR3Vp"))())
+end
+
+--// DRAG FUNCTION //--
+local function MakeDraggable(TopBar, Object)
+    local Dragging, DragInput, DragStart, StartPos
+    TopBar.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            Dragging = true
+            DragStart = input.Position
+            StartPos = Object.Position
+            input.Changed:Connect(function() if input.UserInputState == Enum.UserInputState.End then Dragging = false end end)
+        end
+    end)
+    TopBar.InputChanged:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseMovement then DragInput = input end end)
+    UserInputService.InputChanged:Connect(function(input)
+        if input == DragInput and Dragging then
+            local Delta = input.Position - DragStart
+            TweenService:Create(Object, TweenInfo.new(0.08, Enum.EasingStyle.Linear), {Position = UDim2.new(StartPos.X.Scale, StartPos.X.Offset + Delta.X, StartPos.Y.Scale, StartPos.Y.Offset + Delta.Y)}):Play()
+        end
+    end)
+end
+
+--// MAIN UI FRAME //--
+local MainFrame = Instance.new(loadstring(base64decode("RnJhbWU="))())
+MainFrame.Name = loadstring(base64decode("TWFpbkZyYW1l"))()
+MainFrame.Visible = true
+MainFrame.Size = UDim2.new(0, 300, 0, 240)
+MainFrame.Position = UDim2.new(0, 40, 1, -260)
+MainFrame.BackgroundColor3 = Settings.Background
+MainFrame.BorderSizePixel = 0
+MainFrame.ClipsDescendants = true
+MainFrame.Parent = Ne0eGUI
+
+local MainCorner = Instance.new(loadstring(base64decode("VUlDb3JuZXI="))())
+MainCorner.CornerRadius = UDim.new(0, 8)
+MainCorner.Parent = MainFrame
+local MainStroke = Instance.new(loadstring(base64decode("VUlTdHJva2U="))())
+MainStroke.Color = Settings.Outline
+MainStroke.Parent = MainFrame
+
+--// TOP BAR //--
+local TopBar = Instance.new(loadstring(base64decode("RnJhbWU="))())
+TopBar.Size = UDim2.new(1, 0, 0, 40)
+TopBar.BackgroundTransparency = 1
+TopBar.ZIndex = 2
+TopBar.Parent = MainFrame
+
+local TopLine = Instance.new(loadstring(base64decode("RnJhbWU="))())
+TopLine.Size = UDim2.new(1, 0, 0, 1)
+TopLine.Position = UDim2.new(0, 0, 1, 0)
+TopLine.BackgroundColor3 = Settings.Outline
+TopLine.BorderSizePixel = 0
+TopLine.ZIndex = 2
+TopLine.Parent = TopBar
+
+-- Title
+local HubTitle = Instance.new(loadstring(base64decode("VGV4dExhYmVs"))())
+HubTitle.Text = loadstring(base64decode("RmxpbmcgTWVudQ=="))()
+HubTitle.Size = UDim2.new(1, -50, 1, 0)
+HubTitle.Position = UDim2.new(0, 15, 0, 0)
+HubTitle.BackgroundTransparency = 1
+HubTitle.TextColor3 = Settings.Text
+HubTitle.Font = Enum.Font.GothamBold
+HubTitle.TextSize = 16
+HubTitle.TextXAlignment = Enum.TextXAlignment.Left
+HubTitle.ZIndex = 2
+HubTitle.Parent = TopBar
+
+MakeDraggable(TopBar, MainFrame)
+
+--// TEXTBOX AND BUTTON //--
+local TextBox = Instance.new(loadstring(base64decode("VGV4dEJveA=="))())
+TextBox.Size = UDim2.new(0, 180, 0, 35)
+TextBox.Position = UDim2.new(0, 15, 0, 45)
+TextBox.BackgroundColor3 = Settings.Secondary
+TextBox.BackgroundTransparency = 0.2
+TextBox.TextColor3 = Settings.Text
+TextBox.PlaceholderText = loadstring(base64decode("T3l1bmN1IEFkxLEuLi4="))()
+TextBox.Text = loadstring(base64decode(""))()
+TextBox.TextSize = 14
+TextBox.Font = Enum.Font.Gotham
+TextBox.ClearTextOnFocus = false
+TextBox.ZIndex = 2
+TextBox.Parent = MainFrame
+
+local TextCorner = Instance.new(loadstring(base64decode("VUlDb3JuZXI="))())
+TextCorner.CornerRadius = UDim.new(0, 6)
+TextCorner.Parent = TextBox
+
+local TextStroke = Instance.new(loadstring(base64decode("VUlTdHJva2U="))())
+TextStroke.Color = Settings.Outline
+TextStroke.Parent = TextBox
+
+--// CLOSE BUTTON //--
+local CloseBtn = Instance.new(loadstring(base64decode("VGV4dEJ1dHRvbg=="))())
+CloseBtn.Text = loadstring(base64decode("WA=="))()
+CloseBtn.Size = UDim2.new(0, 35, 1, 0)
+CloseBtn.Position = UDim2.new(1, -35, 0, 0)
+CloseBtn.BackgroundTransparency = 1
+CloseBtn.TextColor3 = Settings.SubText
+CloseBtn.TextSize = 18
+CloseBtn.Font = Enum.Font.Gotham
+CloseBtn.ZIndex = 2
+CloseBtn.Parent = TopBar
+
+CloseBtn.MouseEnter:Connect(function() TweenService:Create(CloseBtn, TweenInfo.new(0.2), {TextColor3 = Settings.Accent}):Play() end)
+CloseBtn.MouseLeave:Connect(function() TweenService:Create(CloseBtn, TweenInfo.new(0.2), {TextColor3 = Settings.SubText}):Play() end)
+
+--// CONTENT //--
+local Content = Instance.new(loadstring(base64decode("U2Nyb2xsaW5nRnJhbWU="))())
+Content.Size = UDim2.new(0, 280, 1, -90)
+Content.Position = UDim2.new(0, 0, 0, 90)
+Content.BackgroundTransparency = 1
+Content.ScrollBarThickness = 2
+Content.ScrollBarImageColor3 = Settings.Outline
+Content.ZIndex = 2
+Content.Parent = MainFrame
+
+local ContentLayout = Instance.new(loadstring(base64decode("VUlMaXN0TGF5b3V0"))())
+ContentLayout.Padding = UDim.new(0, 8)
+ContentLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+ContentLayout.Parent = Content
+
+local ContentPadding = Instance.new(loadstring(base64decode("VUlQYWRkaW5n"))())
+ContentPadding.PaddingTop = UDim.new(0, 10)
+ContentPadding.PaddingBottom = UDim.new(0, 10)
+ContentPadding.PaddingLeft = UDim.new(0, 10)
+ContentPadding.PaddingRight = UDim.new(0, 10)
+ContentPadding.Parent = Content
+
+--// PLAYER LIST FRAME //--
+local SideFrame = Instance.new(loadstring(base64decode("RnJhbWU="))())
+SideFrame.Size = UDim2.new(0, 150, 0, 190)
+SideFrame.Position = UDim2.new(0, 290, 0, 45)
+SideFrame.BackgroundColor3 = Settings.Secondary
+SideFrame.BackgroundTransparency = 0.2
+SideFrame.Visible = true
+SideFrame.ZIndex = 3
+SideFrame.Parent = MainFrame
+
+local SideCorner = Instance.new(loadstring(base64decode("VUlDb3JuZXI="))())
+SideCorner.CornerRadius = UDim.new(0, 8)
+SideCorner.Parent = SideFrame
+
+local SideStroke = Instance.new(loadstring(base64decode("VUlTdHJva2U="))())
+SideStroke.Color = Settings.Outline
+SideStroke.Parent = SideFrame
+
+local SideScroll = Instance.new(loadstring(base64decode("U2Nyb2xsaW5nRnJhbWU="))())
+SideScroll.Size = UDim2.new(1, -10, 1, -10)
+SideScroll.Position = UDim2.new(0, 5, 0, 5)
+SideScroll.BackgroundTransparency = 1
+SideScroll.ScrollBarThickness = 2
+SideScroll.ScrollBarImageColor3 = Settings.Outline
+SideScroll.ZIndex = 3
+SideScroll.Parent = SideFrame
+
+local SideLayout = Instance.new(loadstring(base64decode("VUlMaXN0TGF5b3V0"))())
+SideLayout.Padding = UDim.new(0, 5)
+SideLayout.Parent = SideScroll
+
+local SidePadding = Instance.new(loadstring(base64decode("VUlQYWRkaW5n"))())
+SidePadding.PaddingTop = UDim.new(0, 5)
+SidePadding.PaddingBottom = UDim.new(0, 5)
+SidePadding.PaddingLeft = UDim.new(0, 5)
+SidePadding.PaddingRight = UDim.new(0, 5)
+SidePadding.Parent = SideScroll
+
+--// UI LIBRARY FUNCTIONS //--
+local function CreateButton(Page, Text, Callback)
+    local Btn = Instance.new(loadstring(base64decode("VGV4dEJ1dHRvbg=="))())
+    Btn.Size = UDim2.new(1, 0, 0, 32)
+    Btn.BackgroundColor3 = Settings.Secondary
+    Btn.BackgroundTransparency = 0.2
+    Btn.Text = Text
+    Btn.TextColor3 = Settings.Text
+    Btn.Font = Enum.Font.Gotham
+    Btn.TextSize = 11
+    Btn.AutoButtonColor = false
+    Btn.ZIndex = 2
+    Btn.Parent = Page
+
+    local BtnCorner = Instance.new(loadstring(base64decode("VUlDb3JuZXI="))())
+    BtnCorner.CornerRadius = UDim.new(0, 6)
+    BtnCorner.Parent = Btn
+    local BtnStroke = Instance.new(loadstring(base64decode("VUlTdHJva2U="))())
+    BtnStroke.Color = Settings.Outline
+    BtnStroke.Parent = Btn
+
+    Btn.MouseEnter:Connect(function() TweenService:Create(Btn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(25, 25, 25)}):Play() end)
+    Btn.MouseLeave:Connect(function() TweenService:Create(Btn, TweenInfo.new(0.2), {BackgroundColor3 = Settings.Secondary}):Play() end)
+    Btn.MouseButton1Click:Connect(function()
+        TweenService:Create(Btn, TweenInfo.new(0.1), {Size = UDim2.new(1, 0, 0, 28)}):Play()
+        wait(0.1)
+        TweenService:Create(Btn, TweenInfo.new(0.1), {Size = UDim2.new(1, 0, 0, 32)}):Play()
+        pcall(Callback)
+    end)
+end
+
+local function CreateToggle(Page, Text, Callback)
+    local Toggled = false
+    local TogBtn = Instance.new(loadstring(base64decode("VGV4dEJ1dHRvbg=="))())
+    TogBtn.Size = UDim2.new(1, 0, 0, 32)
+    TogBtn.BackgroundColor3 = Settings.Secondary
+    TogBtn.BackgroundTransparency = 0.2
+    TogBtn.Text = loadstring(base64decode(""))()
+    TogBtn.AutoButtonColor = false
+    TogBtn.ZIndex = 2
+    TogBtn.Parent = Page
+
+    local TogCorner = Instance.new(loadstring(base64decode("VUlDb3JuZXI="))())
+    TogCorner.CornerRadius = UDim.new(0, 6)
+    TogCorner.Parent = TogBtn
+    local TogStroke = Instance.new(loadstring(base64decode("VUlTdHJva2U="))())
+    TogStroke.Color = Settings.Outline
+    TogStroke.Parent = TogBtn
+
+    local TogLabel = Instance.new(loadstring(base64decode("VGV4dExhYmVs"))())
+    TogLabel.Text = Text
+    TogLabel.Size = UDim2.new(1, -50, 1, 0)
+    TogLabel.Position = UDim2.new(0, 12, 0, 0)
+    TogLabel.BackgroundTransparency = 1
+    TogLabel.TextColor3 = Settings.Text
+    TogLabel.Font = Enum.Font.Gotham
+    TogLabel.TextSize = 11
+    TogLabel.TextXAlignment = Enum.TextXAlignment.Left
+    TogLabel.ZIndex = 2
+    TogLabel.Parent = TogBtn
+
+    local SwitchBg = Instance.new(loadstring(base64decode("RnJhbWU="))())
+    SwitchBg.Size = UDim2.new(0, 32, 0, 16)
+    SwitchBg.Position = UDim2.new(1, -38, 0.5, -8)
+    SwitchBg.BackgroundColor3 = Settings.Background
+    SwitchBg.ZIndex = 2
+    SwitchBg.Parent = TogBtn
+    local SwitchCorner = Instance.new(loadstring(base64decode("VUlDb3JuZXI="))())
+    SwitchCorner.CornerRadius = UDim.new(1, 0)
+    SwitchCorner.Parent = SwitchBg
+    local SwitchStroke = Instance.new(loadstring(base64decode("VUlTdHJva2U="))())
+    SwitchStroke.Color = Settings.Outline
+    SwitchStroke.Parent = SwitchBg
+
+    local Circle = Instance.new(loadstring(base64decode("RnJhbWU="))())
+    Circle.Size = UDim2.new(0, 12, 0, 12)
+    Circle.Position = UDim2.new(0, 2, 0.5, -6)
+    Circle.BackgroundColor3 = Settings.SubText
+    Circle.ZIndex = 2
+    Circle.Parent = SwitchBg
+    local CircleCorner = Instance.new(loadstring(base64decode("VUlDb3JuZXI="))())
+    CircleCorner.CornerRadius = UDim.new(1, 0)
+    CircleCorner.Parent = Circle
+
+    TogBtn.MouseButton1Click:Connect(function()
+        Toggled = not Toggled
+        if Toggled then
+            TweenService:Create(SwitchBg, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundColor3 = Settings.Accent}):Play()
+            TweenService:Create(Circle, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Position = UDim2.new(1, -14, 0.5, -6), BackgroundColor3 = Settings.Text}):Play()
+            TweenService:Create(TogLabel, TweenInfo.new(0.3), {TextColor3 = Settings.Accent}):Play()
+        else
+            TweenService:Create(SwitchBg, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundColor3 = Settings.Background}):Play()
+            TweenService:Create(Circle, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Position = UDim2.new(0, 2, 0.5, -6), BackgroundColor3 = Settings.SubText}):Play()
+            TweenService:Create(TogLabel, TweenInfo.new(0.3), {TextColor3 = Settings.Text}):Play()
+        end
+        pcall(Callback, Toggled)
+    end)
+end
+
+local function CreateSmallToggle(Parent, Text, Position, Size, Callback)
+    local Toggled = false
+    local TogBtn = Instance.new(loadstring(base64decode("VGV4dEJ1dHRvbg=="))())
+    TogBtn.Size = Size
+    TogBtn.Position = Position
+    TogBtn.BackgroundColor3 = Settings.Secondary
+    TogBtn.BackgroundTransparency = 0.2
+    TogBtn.Text = Text
+    TogBtn.TextColor3 = Settings.Text
+    TogBtn.Font = Enum.Font.Gotham
+    TogBtn.TextSize = 14
+    TogBtn.AutoButtonColor = false
+    TogBtn.ZIndex = 2
+    TogBtn.Parent = Parent
+
+    local TogCorner = Instance.new(loadstring(base64decode("VUlDb3JuZXI="))())
+    TogCorner.CornerRadius = UDim.new(0, 6)
+    TogCorner.Parent = TogBtn
+    local TogStroke = Instance.new(loadstring(base64decode("VUlTdHJva2U="))())
+    TogStroke.Color = Settings.Outline
+    TogStroke.Parent = TogBtn
+
+    TogBtn.MouseEnter:Connect(function() TweenService:Create(TogBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(25, 25, 25)}):Play() end)
+    TogBtn.MouseLeave:Connect(function() TweenService:Create(TogBtn, TweenInfo.new(0.2), {BackgroundColor3 = Settings.Secondary}):Play() end)
+    TogBtn.MouseButton1Click:Connect(function()
+        Toggled = not Toggled
+        if Toggled then
+            TweenService:Create(TogBtn, TweenInfo.new(0.2), {BackgroundColor3 = Settings.Accent, TextColor3 = Settings.Background}):Play()
+        else
+            TweenService:Create(TogBtn, TweenInfo.new(0.2), {BackgroundColor3 = Settings.Secondary, TextColor3 = Settings.Text}):Play()
+        end
+        pcall(Callback, Toggled)
+    end)
+end
+
+local function refreshPlayerList()
+    for _, child in pairs(SideScroll:GetChildren()) do
+        if child:IsA(loadstring(base64decode("VGV4dEJ1dHRvbg=="))()) then child:Destroy() end
+    end
+    
+    local ySize = 0
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer then
+            local PBtn = Instance.new(loadstring(base64decode("VGV4dEJ1dHRvbg=="))())
+            PBtn.Size = UDim2.new(1, 0, 0, 25)
+            PBtn.BackgroundColor3 = Settings.Background
+            PBtn.BackgroundTransparency = 0.5
+            PBtn.TextColor3 = Settings.Text
+            PBtn.Text = player.Name
+            PBtn.Font = Enum.Font.Gotham
+            PBtn.TextSize = 12
+            PBtn.ZIndex = 3
+            PBtn.Parent = SideScroll
+            
+            local PCorner = Instance.new(loadstring(base64decode("VUlDb3JuZXI="))())
+            PCorner.CornerRadius = UDim.new(0, 4)
+            PCorner.Parent = PBtn
+            
+            PBtn.MouseButton1Click:Connect(function()
+                TextBox.Text = player.Name
+            end)
+            
+            ySize = ySize + 30
+        end
+    end
+    SideScroll.CanvasSize = UDim2.new(0, 0, 0, ySize)
+end
+
+Players.PlayerAdded:Connect(refreshPlayerList)
+Players.PlayerRemoving:Connect(refreshPlayerList)
+refreshPlayerList()
+
+-- Small Toggle for Player List
+CreateSmallToggle(MainFrame, loadstring(base64decode("8J+RpQ=="))(), UDim2.new(0, 200, 0, 45), UDim2.new(0, 35, 0, 35), function(state)
+    if state then
+        TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Size = UDim2.new(0, 450, 0, 240)}):Play()
+        refreshPlayerList()
+    else
+        TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Size = UDim2.new(0, 300, 0, 240)}):Play()
+    end
+end)
+
+-- Status Label
+local statusLabel = Instance.new(loadstring(base64decode("VGV4dExhYmVs"))())
+statusLabel.Size = UDim2.new(1, 0, 0, 28)
+statusLabel.BackgroundColor3 = Settings.Secondary
+statusLabel.BackgroundTransparency = 0.2
+statusLabel.Text = loadstring(base64decode("U3RhdHVzOiBJZGxl"))()
+statusLabel.TextColor3 = Settings.Accent
+statusLabel.Font = Enum.Font.Gotham
+statusLabel.TextSize = 10
+statusLabel.ZIndex = 2
+statusLabel.Parent = Content
+
+local statusLabelCorner = Instance.new(loadstring(base64decode("VUlDb3JuZXI="))())
+statusLabelCorner.CornerRadius = UDim.new(0, 6)
+statusLabelCorner.Parent = statusLabel
+
+-- Fling Functionality
+local isFlinging = false
+local touchFlingActive = false
+local touchFlingConnection
+getgenv().OldPos = nil
+getgenv().FPDH = workspace.FallenPartsDestroyHeight
+
+local function GetPlayer(name)
+    name = string.lower(name)
+    for _, player in pairs(Players:GetPlayers()) do
+        if string.lower(string.sub(player.Name, 1, #name)) == name or string.lower(string.sub(player.DisplayName, 1, #name)) == name then
+            return player
+        end
+    end
+    return nil
+end
+
+local function stopTouchFling()
+    touchFlingActive = false
+    if touchFlingConnection then
+        touchFlingConnection:Disconnect()
+        touchFlingConnection = nil
+    end
+end
+
+local function startTouchFling()
+    if touchFlingConnection then return end
+    touchFlingConnection = RunService.Heartbeat:Connect(function()
+        if not touchFlingActive then
+            stopTouchFling()
+            return
+        end
+        local char = LocalPlayer.Character
+        local hrp = char and char:FindFirstChild(loadstring(base64decode("SHVtYW5vaWRSb290UGFydA=="))())
+        if not hrp then return end
+        
+        local vel = hrp.Velocity
+        hrp.Velocity = vel * 1000000 + Vector3.new(0, 1000000, 0)
+        RunService.RenderStepped:Wait()
+        if hrp and hrp.Parent then
+            hrp.Velocity = vel
+        end
+        RunService.Stepped:Wait()
+        if hrp and hrp.Parent then
+            hrp.Velocity = vel + Vector3.new(0, 0.1, 0)
+        end
+    end)
+end
+
+local function flingPlayer(TargetPlayer)
+    if isFlinging or not TargetPlayer or not TargetPlayer.Character then return end
+    
+    isFlinging = true
+    statusLabel.Text = loadstring(base64decode("U3RhdHVzOiBGbGluZ2luZyA="))() .. TargetPlayer.Name
+    
+    local Player = LocalPlayer
+    local Character = Player.Character
+    local Humanoid = Character and Character:FindFirstChildOfClass(loadstring(base64decode("SHVtYW5vaWQ="))())
+    local RootPart = Humanoid and Humanoid.RootPart
+
+    local TCharacter = TargetPlayer.Character
+    local THumanoid
+    local TRootPart
+    local THead
+    local Accessory
+    local Handle
+
+    if TCharacter:FindFirstChildOfClass(loadstring(base64decode("SHVtYW5vaWQ="))()) then
+        THumanoid = TCharacter:FindFirstChildOfClass(loadstring(base64decode("SHVtYW5vaWQ="))())
+    end
+    if THumanoid and THumanoid.RootPart then
+        TRootPart = THumanoid.RootPart
+    end
+    if TCharacter:FindFirstChild(loadstring(base64decode("SGVhZA=="))()) then
+        THead = TCharacter.Head
+    end
+    if TCharacter:FindFirstChildOfClass(loadstring(base64decode("QWNjZXNzb3J5"))()) then
+        Accessory = TCharacter:FindFirstChildOfClass(loadstring(base64decode("QWNjZXNzb3J5"))())
+    end
+    if Accessory and Accessory:FindFirstChild(loadstring(base64decode("SGFuZGxl"))()) then
+        Handle = Accessory.Handle
+    end
+
+    if Character and Humanoid and RootPart then
+        if RootPart.Velocity.Magnitude < 50 then
+            getgenv().OldPos = RootPart.CFrame
+        end
+        
+        if THead then
+            Workspace.CurrentCamera.CameraSubject = THead
+        elseif not THead and Handle then
+            Workspace.CurrentCamera.CameraSubject = Handle
+        elseif THumanoid and TRootPart then
+            Workspace.CurrentCamera.CameraSubject = THumanoid
+        end
+        
+        if not TCharacter:FindFirstChildWhichIsA(loadstring(base64decode("QmFzZVBhcnQ="))()) then
+            isFlinging = false
+            statusLabel.Text = loadstring(base64decode("U3RhdHVzOiBJZGxl"))()
+            return
+        end
+
+        local FPos = function(BasePart, Pos, Ang)
+            RootPart.CFrame = CFrame.new(BasePart.Position) * Pos * Ang
+            Character:SetPrimaryPartCFrame(CFrame.new(BasePart.Position) * Pos * Ang)
+            RootPart.Velocity = Vector3.new(9e7, 9e7 * 10, 9e7)
+            RootPart.RotVelocity = Vector3.new(9e8, 9e8, 9e8)
+        end
+
+        local SFBasePart = function(BasePart)
+            local TimeToWait = 2
+            local Time = tick()
+            local Angle = 0
+
+            repeat
+                if RootPart and THumanoid then
+                    if BasePart.Velocity.Magnitude < 50 then
+                        Angle = Angle + 100
+
+                        FPos(BasePart, CFrame.new(0, 1.5, 0) + THumanoid.MoveDirection * BasePart.Velocity.Magnitude / 1.25, CFrame.Angles(math.rad(Angle),0 ,0))
+                        task.wait()
+
+                        FPos(BasePart, CFrame.new(0, -1.5, 0) + THumanoid.MoveDirection * BasePart.Velocity.Magnitude / 1.25, CFrame.Angles(math.rad(Angle), 0, 0))
+                        task.wait()
+
+                        FPos(BasePart, CFrame.new(2.25, 1.5, -2.25) + THumanoid.MoveDirection * BasePart.Velocity.Magnitude / 1.25, CFrame.Angles(math.rad(Angle), 0, 0))
+                        task.wait()
+
+                        FPos(BasePart, CFrame.new(-2.25, -1.5, 2.25) + THumanoid.MoveDirection * BasePart.Velocity.Magnitude / 1.25, CFrame.Angles(math.rad(Angle), 0, 0))
+                        task.wait()
+
+                        FPos(BasePart, CFrame.new(0, 1.5, 0) + THumanoid.MoveDirection,CFrame.Angles(math.rad(Angle), 0, 0))
+                        task.wait()
+
+                        FPos(BasePart, CFrame.new(0, -1.5, 0) + THumanoid.MoveDirection,CFrame.Angles(math.rad(Angle), 0, 0))
+                        task.wait()
+                    else
+                        FPos(BasePart, CFrame.new(0, 1.5, THumanoid.WalkSpeed), CFrame.Angles(math.rad(90), 0, 0))
+                        task.wait()
+
+                        FPos(BasePart, CFrame.new(0, -1.5, -THumanoid.WalkSpeed), CFrame.Angles(0, 0, 0))
+                        task.wait()
+
+                        FPos(BasePart, CFrame.new(0, 1.5, THumanoid.WalkSpeed), CFrame.Angles(math.rad(90), 0, 0))
+                        task.wait()
+                        
+                        FPos(BasePart, CFrame.new(0, 1.5, TRootPart.Velocity.Magnitude / 1.25), CFrame.Angles(math.rad(90), 0, 0))
+                        task.wait()
+
+                        FPos(BasePart, CFrame.new(0, -1.5, -TRootPart.Velocity.Magnitude / 1.25), CFrame.Angles(0, 0, 0))
+                        task.wait()
+
+                        FPos(BasePart, CFrame.new(0, 1.5, TRootPart.Velocity.Magnitude / 1.25), CFrame.Angles(math.rad(90), 0, 0))
+                        task.wait()
+
+                        FPos(BasePart, CFrame.new(0, -1.5, 0), CFrame.Angles(math.rad(90), 0, 0))
+                        task.wait()
+
+                        FPos(BasePart, CFrame.new(0, -1.5, 0), CFrame.Angles(0, 0, 0))
+                        task.wait()
+
+                        FPos(BasePart, CFrame.new(0, -1.5 ,0), CFrame.Angles(math.rad(-90), 0, 0))
+                        task.wait()
+
+                        FPos(BasePart, CFrame.new(0, -1.5, 0), CFrame.Angles(0, 0, 0))
+                        task.wait()
+                    end
+                else
+                    break
+                end
+            until BasePart.Velocity.Magnitude > 500 or BasePart.Parent ~= TargetPlayer.Character or TargetPlayer.Parent ~= Players or not TargetPlayer.Character == TCharacter or THumanoid.Sit or Humanoid.Health <= 0 or tick() > Time + TimeToWait
+        end
+
+        workspace.FallenPartsDestroyHeight = 0/0
+
+        local BV = Instance.new(loadstring(base64decode("Qm9keVZlbG9jaXR5"))())
+        BV.Name = loadstring(base64decode("RXBpeFZlbA=="))()
+        BV.Parent = RootPart
+        BV.Velocity = Vector3.new(9e8, 9e8, 9e8)
+        BV.MaxForce = Vector3.new(1/0, 1/0, 1/0)
+
+        Humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
+
+        if TRootPart and THead then
+            if (TRootPart.CFrame.p - THead.CFrame.p).Magnitude > 5 then
+                SFBasePart(THead)
+            else
+                SFBasePart(TRootPart)
+            end
+        elseif TRootPart and not THead then
+            SFBasePart(TRootPart)
+        elseif not TRootPart and THead then
+            SFBasePart(THead)
+        elseif not TRootPart and not THead and Accessory and Handle then
+            SFBasePart(Handle)
+        end
+
+        BV:Destroy()
+        Humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, true)
+        Workspace.CurrentCamera.CameraSubject = Humanoid
+
+        repeat
+            RootPart.CFrame = getgenv().OldPos * CFrame.new(0, .5, 0)
+            Character:SetPrimaryPartCFrame(getgenv().OldPos * CFrame.new(0, .5, 0))
+            Humanoid:ChangeState(loadstring(base64decode("R2V0dGluZ1Vw"))())
+            table.foreach(Character:GetChildren(), function(_, x)
+                if x:IsA(loadstring(base64decode("QmFzZVBhcnQ="))()) then
+                    x.Velocity, x.RotVelocity = Vector3.new(), Vector3.new()
+                end
+            end)
+            task.wait()
+        until (RootPart.Position - getgenv().OldPos.p).Magnitude < 25
+        
+        workspace.FallenPartsDestroyHeight = getgenv().FPDH
+    end
+    
+    isFlinging = false
+    statusLabel.Text = loadstring(base64decode("U3RhdHVzOiBJZGxl"))()
+end
+
+-- Touch Fling Toggle
+CreateToggle(Content, loadstring(base64decode("VG91Y2ggRmxpbmc="))(), function(state)
+    touchFlingActive = state
+    if state then
+        startTouchFling()
+    else
+        stopTouchFling()
+    end
+end)
+
+-- Fling Button
+CreateButton(Content, loadstring(base64decode("8J+SpSBGbGluZyBQbGF5ZXI="))(), function()
+    if isFlinging then return end
+    local input = TextBox.Text
+    if input == loadstring(base64decode(""))() then 
+        statusLabel.Text = loadstring(base64decode("U3RhdHVzOiBFbnRlciBhIG5hbWU="))()
+        return 
+    end
+    local target = GetPlayer(input)
+    if target then
+        flingPlayer(target)
+    else
+        statusLabel.Text = loadstring(base64decode("U3RhdHVzOiBQbGF5ZXIgbm90IGZvdW5k"))()
+        task.wait(1.5)
+        statusLabel.Text = loadstring(base64decode("U3RhdHVzOiBJZGxl"))()
+    end
+end)
+
+-- Close Button Logic
+CloseBtn.MouseButton1Click:Connect(function()
+    stopTouchFling()
+    TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0)}):Play()
+    wait(0.3)
+    Ne0eGUI:Destroy()
+end)
+end
+gXJ6pKek(bvQOH)
+end)(...)
