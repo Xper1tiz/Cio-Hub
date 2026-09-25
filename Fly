@@ -1,0 +1,363 @@
+return(function(MVfo2, ...)
+local dwLMlU = {"rhJrxefYXGVcvYx";"OW7pt";"BGY";"dYiA1lioBET6x";"nMzDQjdT1Gar";"Jl4ZU4cGi";"usU64AOGHxCThXen";"Y54e"}
+local 77Qxlrrd = function(...)
+--[[ 
+    NE0E'S FLY - CIO HUB MENU VERSION
+    Fly Script with CioHub Menu Style
+]]
+
+local Players = game:GetService(loadstring(base64decode("UGxheWVycw=="))())
+local TweenService = game:GetService(loadstring(base64decode("VHdlZW5TZXJ2aWNl"))())
+local UserInputService = game:GetService(loadstring(base64decode("VXNlcklucHV0U2VydmljZQ=="))())
+local CoreGui = game:GetService(loadstring(base64decode("Q29yZUd1aQ=="))())
+local RunService = game:GetService(loadstring(base64decode("UnVuU2VydmljZQ=="))())
+
+local LocalPlayer = Players.LocalPlayer
+local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+local humanoid = character:WaitForChild(loadstring(base64decode("SHVtYW5vaWQ="))())
+local rootPart = character:WaitForChild(loadstring(base64decode("SHVtYW5vaWRSb290UGFydA=="))())
+
+--// SETTINGS & COLOR PALETTE //--
+local Settings = {
+    HubName = loadstring(base64decode("Q2lvIEh1Yg=="))(),
+    Accent = Color3.fromRGB(255, 45, 45),
+    Background = Color3.fromRGB(10, 10, 10),
+    Secondary = Color3.fromRGB(16, 16, 16),
+    Outline = Color3.fromRGB(35, 35, 35),
+    Text = Color3.fromRGB(255, 255, 255),
+    SubText = Color3.fromRGB(140, 140, 140)
+}
+
+--// GUI CREATION //--
+local CioGUI = Instance.new(loadstring(base64decode("U2NyZWVuR3Vp"))())
+CioGUI.Name = loadstring(base64decode("Q2lvSHViX0ZseQ=="))()
+CioGUI.IgnoreGuiInset = true
+CioGUI.ResetOnSpawn = false
+if pcall(function() CioGUI.Parent = CoreGui end) then
+    CioGUI.Parent = CoreGui
+else
+    CioGUI.Parent = LocalPlayer:WaitForChild(loadstring(base64decode("UGxheWVyR3Vp"))())
+end
+
+--// DRAG FUNCTION //--
+local function MakeDraggable(TopBar, Object)
+    local Dragging, DragInput, DragStart, StartPos
+    TopBar.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            Dragging = true
+            DragStart = input.Position
+            StartPos = Object.Position
+            input.Changed:Connect(function() if input.UserInputState == Enum.UserInputState.End then Dragging = false end end)
+        end
+    end)
+    TopBar.InputChanged:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseMovement then DragInput = input end end)
+    UserInputService.InputChanged:Connect(function(input)
+        if input == DragInput and Dragging then
+            local Delta = input.Position - DragStart
+            TweenService:Create(Object, TweenInfo.new(0.08, Enum.EasingStyle.Linear), {Position = UDim2.new(StartPos.X.Scale, StartPos.X.Offset + Delta.X, StartPos.Y.Scale, StartPos.Y.Offset + Delta.Y)}):Play()
+        end
+    end)
+end
+
+--// MAIN UI FRAME //--
+local MainFrame = Instance.new(loadstring(base64decode("RnJhbWU="))())
+MainFrame.Name = loadstring(base64decode("TWFpbkZyYW1l"))()
+MainFrame.Visible = true
+MainFrame.Size = UDim2.new(0, 280, 0, 140)
+MainFrame.Position = UDim2.new(0, 40, 1, -160)
+MainFrame.BackgroundColor3 = Settings.Background
+MainFrame.BorderSizePixel = 0
+MainFrame.ClipsDescendants = true
+MainFrame.Parent = CioGUI
+
+local MainCorner = Instance.new(loadstring(base64decode("VUlDb3JuZXI="))())
+MainCorner.CornerRadius = UDim.new(0, 8)
+MainCorner.Parent = MainFrame
+local MainStroke = Instance.new(loadstring(base64decode("VUlTdHJva2U="))())
+MainStroke.Color = Settings.Outline
+MainStroke.Parent = MainFrame
+
+--// TOP BAR //--
+local TopBar = Instance.new(loadstring(base64decode("RnJhbWU="))())
+TopBar.Size = UDim2.new(1, 0, 0, 40)
+TopBar.BackgroundTransparency = 1
+TopBar.ZIndex = 2
+TopBar.Parent = MainFrame
+
+local TopLine = Instance.new(loadstring(base64decode("RnJhbWU="))())
+TopLine.Size = UDim2.new(1, 0, 0, 1)
+TopLine.Position = UDim2.new(0, 0, 1, 0)
+TopLine.BackgroundColor3 = Settings.Outline
+TopLine.BorderSizePixel = 0
+TopLine.ZIndex = 2
+TopLine.Parent = TopBar
+
+-- Title
+local HubTitle = Instance.new(loadstring(base64decode("VGV4dExhYmVs"))())
+HubTitle.Text = loadstring(base64decode("Rmx5IE1lbnU="))()
+HubTitle.Size = UDim2.new(1, -50, 1, 0)
+HubTitle.Position = UDim2.new(0, 15, 0, 0)
+HubTitle.BackgroundTransparency = 1
+HubTitle.TextColor3 = Settings.Text
+HubTitle.Font = Enum.Font.GothamBold
+HubTitle.TextSize = 16
+HubTitle.TextXAlignment = Enum.TextXAlignment.Left
+HubTitle.ZIndex = 2
+HubTitle.Parent = TopBar
+
+MakeDraggable(TopBar, MainFrame)
+
+--// CLOSE BUTTON //--
+local CloseBtn = Instance.new(loadstring(base64decode("VGV4dEJ1dHRvbg=="))())
+CloseBtn.Text = loadstring(base64decode("WA=="))()
+CloseBtn.Size = UDim2.new(0, 35, 1, 0)
+CloseBtn.Position = UDim2.new(1, -35, 0, 0)
+CloseBtn.BackgroundTransparency = 1
+CloseBtn.TextColor3 = Settings.SubText
+CloseBtn.TextSize = 18
+CloseBtn.Font = Enum.Font.Gotham
+CloseBtn.ZIndex = 2
+CloseBtn.Parent = TopBar
+
+CloseBtn.MouseEnter:Connect(function() TweenService:Create(CloseBtn, TweenInfo.new(0.2), {TextColor3 = Settings.Accent}):Play() end)
+CloseBtn.MouseLeave:Connect(function() TweenService:Create(CloseBtn, TweenInfo.new(0.2), {TextColor3 = Settings.SubText}):Play() end)
+
+--// CONTENT //--
+local Content = Instance.new(loadstring(base64decode("U2Nyb2xsaW5nRnJhbWU="))())
+Content.Size = UDim2.new(1, 0, 1, -40)
+Content.Position = UDim2.new(0, 0, 0, 40)
+Content.BackgroundTransparency = 1
+Content.ScrollBarThickness = 2
+Content.ScrollBarImageColor3 = Settings.Outline
+Content.ZIndex = 2
+Content.Parent = MainFrame
+
+local ContentLayout = Instance.new(loadstring(base64decode("VUlMaXN0TGF5b3V0"))())
+ContentLayout.Padding = UDim.new(0, 8)
+ContentLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+ContentLayout.Parent = Content
+
+local ContentPadding = Instance.new(loadstring(base64decode("VUlQYWRkaW5n"))())
+ContentPadding.PaddingTop = UDim.new(0, 8)
+ContentPadding.PaddingBottom = UDim.new(0, 8)
+ContentPadding.PaddingLeft = UDim.new(0, 10)
+ContentPadding.PaddingRight = UDim.new(0, 10)
+ContentPadding.Parent = Content
+
+--// FLY VARIABLES & FUNCTIONS //--
+local flySpeed = 50
+local flying = false
+local bodyVelocity, bodyGyro
+local eConnection
+
+local function enableFly()
+    if flying then return end
+    flying = true
+    humanoid.PlatformStand = true
+
+    bodyVelocity = Instance.new(loadstring(base64decode("Qm9keVZlbG9jaXR5"))())
+    bodyVelocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+    bodyVelocity.Parent = rootPart
+
+    bodyGyro = Instance.new(loadstring(base64decode("Qm9keUd5cm8="))())
+    bodyGyro.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+    bodyGyro.P = 10000
+    bodyGyro.D = 500
+    bodyGyro.CFrame = rootPart.CFrame
+    bodyGyro.Parent = rootPart
+
+    spawn(function()
+        while flying and bodyVelocity and bodyGyro do
+            local camera = workspace.CurrentCamera
+            local direction = Vector3.new()
+            if UserInputService:IsKeyDown(Enum.KeyCode.W) then direction += camera.CFrame.LookVector end
+            if UserInputService:IsKeyDown(Enum.KeyCode.S) then direction -= camera.CFrame.LookVector end
+            if UserInputService:IsKeyDown(Enum.KeyCode.A) then direction -= camera.CFrame.RightVector end
+            if UserInputService:IsKeyDown(Enum.KeyCode.D) then direction += camera.CFrame.RightVector end
+            if UserInputService:IsKeyDown(Enum.KeyCode.Space) then direction += Vector3.new(0,1,0) end
+            if UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then direction += Vector3.new(0,-1,0) end
+            if direction.Magnitude > 0 then direction = direction.Unit*flySpeed end
+            bodyVelocity.Velocity = direction
+            bodyGyro.CFrame = CFrame.new(rootPart.Position,rootPart.Position+camera.CFrame.LookVector)
+            wait()
+        end
+    end)
+end
+
+local function disableFly()
+    if not flying then return end
+    flying = false
+    if bodyVelocity then bodyVelocity:Destroy() bodyVelocity=nil end
+    if bodyGyro then bodyGyro:Destroy() bodyGyro=nil end
+    humanoid.PlatformStand = false
+end
+local function CreateToggle(Page, Text, Callback)
+    local Toggled = false
+    local TogBtn = Instance.new(loadstring(base64decode("VGV4dEJ1dHRvbg=="))())
+    TogBtn.Size = UDim2.new(1, 0, 0, 32)
+    TogBtn.BackgroundColor3 = Settings.Secondary
+    TogBtn.BackgroundTransparency = 0.2
+    TogBtn.Text = loadstring(base64decode(""))()
+    TogBtn.AutoButtonColor = false
+    TogBtn.ZIndex = 2
+    TogBtn.Parent = Page
+
+    local TogCorner = Instance.new(loadstring(base64decode("VUlDb3JuZXI="))())
+    TogCorner.CornerRadius = UDim.new(0, 6)
+    TogCorner.Parent = TogBtn
+    local TogStroke = Instance.new(loadstring(base64decode("VUlTdHJva2U="))())
+    TogStroke.Color = Settings.Outline
+    TogStroke.Parent = TogBtn
+
+    local TogLabel = Instance.new(loadstring(base64decode("VGV4dExhYmVs"))())
+    TogLabel.Text = Text
+    TogLabel.Size = UDim2.new(1, -50, 1, 0)
+    TogLabel.Position = UDim2.new(0, 12, 0, 0)
+    TogLabel.BackgroundTransparency = 1
+    TogLabel.TextColor3 = Settings.Text
+    TogLabel.Font = Enum.Font.Gotham
+    TogLabel.TextSize = 11
+    TogLabel.TextXAlignment = Enum.TextXAlignment.Left
+    TogLabel.ZIndex = 2
+    TogLabel.Parent = TogBtn
+
+    local SwitchBg = Instance.new(loadstring(base64decode("RnJhbWU="))())
+    SwitchBg.Size = UDim2.new(0, 32, 0, 16)
+    SwitchBg.Position = UDim2.new(1, -38, 0.5, -8)
+    SwitchBg.BackgroundColor3 = Settings.Background
+    SwitchBg.ZIndex = 2
+    SwitchBg.Parent = TogBtn
+    local SwitchCorner = Instance.new(loadstring(base64decode("VUlDb3JuZXI="))())
+    SwitchCorner.CornerRadius = UDim.new(1, 0)
+    SwitchCorner.Parent = SwitchBg
+    local SwitchStroke = Instance.new(loadstring(base64decode("VUlTdHJva2U="))())
+    SwitchStroke.Color = Settings.Outline
+    SwitchStroke.Parent = SwitchBg
+
+    local Circle = Instance.new(loadstring(base64decode("RnJhbWU="))())
+    Circle.Size = UDim2.new(0, 12, 0, 12)
+    Circle.Position = UDim2.new(0, 2, 0.5, -6)
+    Circle.BackgroundColor3 = Settings.SubText
+    Circle.ZIndex = 2
+    Circle.Parent = SwitchBg
+    local CircleCorner = Instance.new(loadstring(base64decode("VUlDb3JuZXI="))())
+    CircleCorner.CornerRadius = UDim.new(1, 0)
+    CircleCorner.Parent = Circle
+
+    TogBtn.MouseButton1Click:Connect(function()
+        Toggled = not Toggled
+        if Toggled then
+            TweenService:Create(SwitchBg, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundColor3 = Settings.Accent}):Play()
+            TweenService:Create(Circle, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Position = UDim2.new(1, -14, 0.5, -6), BackgroundColor3 = Settings.Text}):Play()
+            TweenService:Create(TogLabel, TweenInfo.new(0.3), {TextColor3 = Settings.Accent}):Play()
+        else
+            TweenService:Create(SwitchBg, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundColor3 = Settings.Background}):Play()
+            TweenService:Create(Circle, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Position = UDim2.new(0, 2, 0.5, -6), BackgroundColor3 = Settings.SubText}):Play()
+            TweenService:Create(TogLabel, TweenInfo.new(0.3), {TextColor3 = Settings.Text}):Play()
+        end
+        if Callback then pcall(Callback, Toggled) end
+    end)
+    
+    return TogBtn, TogLabel
+end
+
+--------------------------------------------------------------------------------
+--[[ SPEED & FLY CONTROLS ]]--
+--------------------------------------------------------------------------------
+
+-- Speed TextBox
+local speedBox = Instance.new(loadstring(base64decode("VGV4dEJveA=="))())
+speedBox.Size = UDim2.new(1, 0, 0, 26)
+speedBox.BackgroundColor3 = Settings.Secondary
+speedBox.BackgroundTransparency = 0.2
+speedBox.TextColor3 = Settings.Text
+speedBox.PlaceholderText = loadstring(base64decode("U3BlZWQgKDUwKQ=="))()
+speedBox.Text = loadstring(base64decode("NTA="))()
+speedBox.TextSize = 10
+speedBox.Font = Enum.Font.Gotham
+speedBox.ClearTextOnFocus = false
+speedBox.ZIndex = 2
+speedBox.Parent = Content
+
+local speedBoxCorner = Instance.new(loadstring(base64decode("VUlDb3JuZXI="))())
+speedBoxCorner.CornerRadius = UDim.new(0, 6)
+speedBoxCorner.Parent = speedBox
+
+local speedBoxStroke = Instance.new(loadstring(base64decode("VUlTdHJva2U="))())
+speedBoxStroke.Color = Settings.Outline
+speedBoxStroke.Parent = speedBox
+
+speedBox.FocusLost:Connect(function()
+    local guHwUfOs = tonumber(speedBox.Text)
+    if guHwUfOs then
+        flySpeed = math.clamp(guHwUfOs, 10, 1000)
+        speedBox.Text = tostring(flySpeed)
+    else
+        speedBox.Text = tostring(flySpeed)
+    end
+end)
+
+-- Fly Toggle
+local flyTogBtn, flyLabel = CreateToggle(Content, loadstring(base64decode("8J+bqyBGbHk="))(), nil)
+
+-- Toggle Helper
+local function toggleFly()
+    if flying then 
+        disableFly()
+    else 
+        enableFly()
+    end
+    
+    -- Update UI
+    local SwitchBg = flyTogBtn:FindFirstChild(loadstring(base64decode("RnJhbWU="))())
+    if SwitchBg then
+        if flying then
+            TweenService:Create(SwitchBg, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundColor3 = Settings.Accent}):Play()
+            local Circle = SwitchBg:FindFirstChild(loadstring(base64decode("RnJhbWU="))())
+            if Circle then
+                TweenService:Create(Circle, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Position = UDim2.new(1, -14, 0.5, -6)}):Play()
+            end
+            TweenService:Create(flyLabel, TweenInfo.new(0.3), {TextColor3 = Settings.Accent}):Play()
+        else
+            TweenService:Create(SwitchBg, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundColor3 = Settings.Background}):Play()
+            local Circle = SwitchBg:FindFirstChild(loadstring(base64decode("RnJhbWU="))())
+            if Circle then
+                TweenService:Create(Circle, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Position = UDim2.new(0, 2, 0.5, -6)}):Play()
+            end
+            TweenService:Create(flyLabel, TweenInfo.new(0.3), {TextColor3 = Settings.Text}):Play()
+        end
+    end
+end
+
+-- Manual toggle click
+flyTogBtn.MouseButton1Click:Connect(function()
+    toggleFly()
+end)
+
+-- Toggle with E key
+eConnection = UserInputService.InputBegan:Connect(function(input, gp)
+    if gp then return end
+    if input.KeyCode == Enum.KeyCode.E then
+        toggleFly()
+    end
+end)
+
+-- Close Button
+CloseBtn.MouseButton1Click:Connect(function()
+    disableFly()
+    if eConnection then eConnection:Disconnect() end
+    TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0)}):Play()
+    wait(0.3)
+    CioGUI:Destroy()
+end)
+
+-- Reset fly on character respawn
+LocalPlayer.CharacterAdded:Connect(function(newCharacter)
+    character = newCharacter
+    humanoid = character:WaitForChild(loadstring(base64decode("SHVtYW5vaWQ="))())
+    rootPart = character:WaitForChild(loadstring(base64decode("SHVtYW5vaWRSb290UGFydA=="))())
+    disableFly()
+end)
+end
+kAt76wZX(vy4DF)
+end)(...)
